@@ -9,7 +9,20 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "declaration": true,
-        "rootDir": "./src"
+        "rootDir": "./src",
+        "typeRoots": [
+            "node_modules",
+            "node_modules/@types"
+        ],
+        "types": [
+            "@turbowarp/types"
+        ],
+        "paths": {
+            "@asset/*": [
+                "src/assets/*"
+            ]
+        },
+        "baseUrl": "."
     },
     "include": [
         "src/**/*"

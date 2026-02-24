@@ -5,5 +5,8 @@ export default defineConfig({
     splitting: false,
     sourcemap: true,
     clean: true,
-    minify: true
+    minify: true,
+    loader: {
+        ".svg": "dataurl"
+    }
 });
