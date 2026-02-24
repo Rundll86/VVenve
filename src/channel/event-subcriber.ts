@@ -6,11 +6,11 @@ interface Subcriber<T, O> {
     callback: SubcriberCallback<T, O>;
     once: boolean;
 }
-export class EventSubcriber<T, O> {
+export class EventSubcriber<T, O = void> {
     private subcribers: Subcriber<T, O>[] = [];
-    private defaultOptions: O;
+    private defaultOptions?: O;
 
-    constructor(defaultOptions: O) {
+    constructor(defaultOptions?: O) {
         this.defaultOptions = defaultOptions;
     }
     subcribe(callback: SubcriberCallback<T, O>, options?: O, once = false) {

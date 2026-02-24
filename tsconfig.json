@@ -8,9 +8,11 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
         "declaration": true,
         "rootDir": "./src",
         "typeRoots": [
+            "src/types",
             "node_modules",
             "node_modules/@types"
         ],
@@ -25,7 +27,8 @@
         "baseUrl": "."
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "src/types/**/*"
     ],
     "exclude": [
         "node_modules",

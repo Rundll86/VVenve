@@ -1,17 +1,33 @@
-import { TreeContext } from "./tree";
+import { Empty } from "src/util/types";
+import { TreeContext, tree } from "./tree";
 
+export type RenderResult = {
+    mount(to: string | HTMLElement): void;
+    $: TreeContext;
+};
+export type TreeResult = HTMLElement | TreeContext | string | number | Empty;
 export interface Component<T> {
-    (props: T): Node | null;
+    (props: T): RenderResult;
 }
-export function createComponent<T>(render: (options: T) => HTMLElement | TreeContext | string | number | null): Component<T> {
-    return (options) => {
-        const result = render(options);
-        if (result instanceof HTMLElement) {
-            return result;
-        } else if (typeof result === "string" || typeof result === "number") {
-            return document.createTextNode(String(result));
+export function createComponent<T = void>(renderer: (options: T) => TreeResult): Component<T> {
+    return (options: T) => {
+        const nodeTree = renderer(options);
+        let result: TreeContext;
+        if (nodeTree instanceof HTMLElement) {
+            result = tree(nodeTree);
+        } else if (typeof nodeTree === "string" || typeof nodeTree === "number") {
+            result = tree("span").textContent(String(nodeTree));
         } else {
-            return result?.element ?? null;
+            result = nodeTree ?? tree("div");
         }
+        return {
+            mount(to: string | HTMLElement) {
+                const targets = typeof to === "string" ? [...document.querySelectorAll<HTMLElement>(to)] : [to];
+                for (const target of targets) {
+                    target.appendChild(result.element);
+                }
+            },
+            $: result
+        };
     };
 }
