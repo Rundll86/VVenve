@@ -22,6 +22,9 @@
         "paths": {
             "@asset/*": [
                 "src/assets/*"
+            ],
+            "$/*": [
+                "src/obtain/*"
             ]
         },
         "baseUrl": "."

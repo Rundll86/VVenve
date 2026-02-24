@@ -39,6 +39,6 @@ function obtainVM(): VM | null {
     }
     return null;
 }
-const vm = obtainVM();
+export const vm = obtainVM();
 
 export default vm;

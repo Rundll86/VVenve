@@ -1,5 +1,6 @@
 import { Empty } from "src/util/types";
 import { TreeContext, tree } from "./tree";
+import { isReference, Reference } from "./reactive";
 
 export type RenderResult = {
     mount(to: string | HTMLElement): void;

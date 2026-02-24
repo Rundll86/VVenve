@@ -4,16 +4,19 @@ export const referenceSymbol = Symbol("referenced");
 export type Reference<T> = {
     get(): T;
     set(newData: T): void;
-    event: EventSubcriber<T>;
+    event: EventSubcriber<[T, T]>;
 } & { [K in typeof referenceSymbol]: true; };
 export function reference<T>(initialData: T): Reference<T> {
-    const event = new EventSubcriber<T>();
+    const event = new EventSubcriber<[T, T]>();
     let currentData = initialData;
     return {
         get() { return currentData; },
         set(newData) {
-            currentData = newData;
-            event.emit(currentData);
+            if (currentData !== newData) {
+                const oldData = currentData;
+                currentData = newData;
+                event.emit(newData, oldData);
+            }
         },
         event,
         [referenceSymbol]: true
@@ -22,7 +25,12 @@ export function reference<T>(initialData: T): Reference<T> {
 export function compute<T, R>(render: () => R, dependencies: Reference<T>[]): Reference<R> {
     const internalRef = reference(render());
     const update = () => {
-        internalRef.set(render());
+        const newData = render();
+        const currentData = internalRef.get();
+        const hasChanged = currentData !== newData;
+        if (hasChanged) {
+            internalRef.set(newData);
+        }
     };
     for (const dependency of dependencies) {
         dependency.event.subcribe(update);

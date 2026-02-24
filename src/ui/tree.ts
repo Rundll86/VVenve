@@ -6,7 +6,7 @@ export type TreeContext<T extends HTMLElement = HTMLElement> = {
     [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Reference<T[K]>) => TreeContext<T>;
 } & {
     element: T;
-    append(...children: TreeResult[]): TreeContext<T>;
+    append(...children: (TreeResult | Reference<TreeResult[]>)[]): TreeContext<T>;
     use(styleSet: StyleSet | Reference<StyleSet>): TreeContext<T>;
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
@@ -14,9 +14,28 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
     const element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
-        append(...children: TreeResult[]) {
+        append(...children: (TreeResult | Reference<TreeResult[]>)[]) {
             for (const child of children) {
-                element.appendChild(normalizeTree(child).element);
+                if (!isReference<TreeResult[]>(child)) { //插入的不是响应式，直接用
+                    element.appendChild(normalizeTree(child).element);
+                    continue;
+                }
+                let oldChildren: TreeContext[] = [];
+                const baseAnchor = element.childNodes[element.childNodes.length - 1]; //把锚点存起来，树更新时把新节点加到这个锚点后面
+                const update = (newTrees: TreeResult[]) => {
+                    const newChildren: TreeContext[] = [];
+                    for (const newTree of newTrees) {
+                        const child = normalizeTree(newTree);
+                        newChildren.push(child);
+                        element.insertBefore(child.element, baseAnchor.nextSibling); //是要插在锚点的后面，不是前面
+                    }
+                    for (const oldChild of oldChildren) { //新节点创建后把旧的删掉
+                        oldChild.element.remove();
+                    }
+                    oldChildren = newChildren; //下一次更新时，这一次更新的节点就成旧节点了
+                };
+                child.event.subcribe(update); //订阅响应式对象的事件
+                update(child.get());
             }
             return context;
         },
