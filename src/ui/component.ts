@@ -4,22 +4,32 @@ import { TreeContext, tree } from "./tree";
 export type RenderResult = {
     mount(to: string | HTMLElement): void;
     $: TreeContext;
-};
-export type TreeResult = HTMLElement | TreeContext | string | number | Empty;
+} & { [K in typeof renderResultSymbol]: true; };
+export type TreeResult = HTMLElement | TreeContext | string | number | Empty | RenderResult;
 export interface Component<T> {
-    (props: T): RenderResult;
+    (props: T, slot?: () => TreeResult): RenderResult;
 }
-export function createComponent<T = void>(renderer: (options: T) => TreeResult): Component<T> {
-    return (options: T) => {
-        const nodeTree = renderer(options);
-        let result: TreeContext;
-        if (nodeTree instanceof HTMLElement) {
-            result = tree(nodeTree);
-        } else if (typeof nodeTree === "string" || typeof nodeTree === "number") {
-            result = tree("span").textContent(String(nodeTree));
-        } else {
-            result = nodeTree ?? tree("div");
-        }
+export const renderResultSymbol = Symbol("renderResult")
+export function isRenderResult(data: unknown): data is RenderResult {
+    return Object.hasOwn(data, renderResultSymbol) && data[renderResultSymbol] === true;
+}
+export function normalizeTree(nodeTree: TreeResult) {
+    let result: TreeContext;
+    if (nodeTree instanceof HTMLElement) {
+        result = tree(nodeTree);
+    } else if (typeof nodeTree === "string" || typeof nodeTree === "number") {
+        result = tree("span").textContent(String(nodeTree));
+    } else if (isRenderResult(nodeTree)) {
+        result = nodeTree.$;
+    } else {
+        result = nodeTree ?? tree("div");
+    }
+    return result;
+}
+export function createComponent<T = void>(renderer: (options: T, slot: () => TreeResult) => TreeResult): Component<T> {
+    return (props: T, slot?: () => TreeResult) => {
+        const nodeTree = renderer(props, () => slot?.());
+        const result = normalizeTree(nodeTree);
         return {
             mount(to: string | HTMLElement) {
                 const targets = typeof to === "string" ? [...document.querySelectorAll<HTMLElement>(to)] : [to];
@@ -27,7 +37,8 @@ export function createComponent<T = void>(renderer: (options: T) => TreeResult):
                     target.appendChild(result.element);
                 }
             },
-            $: result
+            $: result,
+            [renderResultSymbol]: true
         };
     };
 }

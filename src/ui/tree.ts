@@ -1,3 +1,4 @@
+import { normalizeTree, TreeResult } from "./component";
 import { isReference, Reference } from "./reactive";
 import { StyleSet } from "./style";
 
@@ -5,7 +6,7 @@ export type TreeContext<T extends HTMLElement = HTMLElement> = {
     [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Reference<T[K]>) => TreeContext<T>;
 } & {
     element: T;
-    append(...children: (TreeContext | HTMLElement)[]): TreeContext<T>;
+    append(...children: TreeResult[]): TreeContext<T>;
     use(styleSet: StyleSet | Reference<StyleSet>): TreeContext<T>;
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
@@ -13,13 +14,9 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
     let element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
-        append(...children: (TreeContext | HTMLElement)[]) {
+        append(...children: TreeResult[]) {
             for (const child of children) {
-                if (child instanceof HTMLElement) {
-                    element.appendChild(child);
-                } else {
-                    element.appendChild(child.element);
-                }
+                element.appendChild(normalizeTree(child).element);
             }
             return context;
         },

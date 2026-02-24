@@ -3,7 +3,7 @@ import { compute, reference } from "../reactive";
 import { styleSet } from "../style";
 import { tree } from "../tree";
 
-export default createComponent(() => {
+export default createComponent((_, slot) => {
     let x = reference(0);
     let y = reference(0);
     let mouseOffsetX = 0;
@@ -11,8 +11,10 @@ export default createComponent(() => {
     let dragging = false;
     window.addEventListener("mouseup", () => dragging = false);
     window.addEventListener("mousemove", (e) => {
-        x.set(e.clientX - mouseOffsetX);
-        y.set(e.clientY - mouseOffsetY);
+        if (dragging) {
+            x.set(e.clientX - mouseOffsetX);
+            y.set(e.clientY - mouseOffsetY);
+        }
     });
     return tree("div")
         .use(compute(
@@ -20,8 +22,9 @@ export default createComponent(() => {
                 styleSet()
                     .left(`${x.get()}px`)
                     .top(`${y.get()}px`),
-            [x]
+            [x, y]
         ))
+        .append(slot())
         .on("mousedown", (e) => {
             mouseOffsetX = e.offsetX;
             mouseOffsetY = e.offsetY;
