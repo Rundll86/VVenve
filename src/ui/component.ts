@@ -9,7 +9,7 @@ export type TreeResult = HTMLElement | TreeContext | string | number | Empty | R
 export interface Component<T> {
     (props: T, slot?: () => TreeResult): RenderResult;
 }
-export const renderResultSymbol = Symbol("renderResult")
+export const renderResultSymbol = Symbol("renderResult");
 export function isRenderResult(data: unknown): data is RenderResult {
     return Object.hasOwn(data, renderResultSymbol) && data[renderResultSymbol] === true;
 }

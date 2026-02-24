@@ -11,7 +11,7 @@ export type TreeContext<T extends HTMLElement = HTMLElement> = {
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
 export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElement) {
-    let element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
+    const element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
         append(...children: TreeResult[]) {
@@ -25,7 +25,7 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
                 for (const [key, value] of Object.entries(rules)) {
                     element.style.setProperty(String(key), value);
                 }
-            }
+            };
             if (isReference<StyleSet>(styleSet)) {
                 styleSet.event.subcribe((newData) => update(newData.rules));
                 update(styleSet.get().rules);

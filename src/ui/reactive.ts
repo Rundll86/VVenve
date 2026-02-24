@@ -20,11 +20,10 @@ export function reference<T>(initialData: T): Reference<T> {
     };
 }
 export function compute<T, R>(render: () => R, dependencies: Reference<T>[]): Reference<R> {
+    const internalRef = reference(render());
     const update = () => {
         internalRef.set(render());
-        console.log(dependencies.map(dep => dep.get()));
     };
-    const internalRef = reference(render());
     for (const dependency of dependencies) {
         dependency.event.subcribe(update);
     }

@@ -4,16 +4,17 @@ import { styleSet } from "../style";
 import { tree } from "../tree";
 
 export default createComponent((_, slot) => {
-    let x = reference(0);
-    let y = reference(0);
+    const x = reference(0);
+    const y = reference(0);
     let mouseOffsetX = 0;
     let mouseOffsetY = 0;
-    let dragging = false;
-    window.addEventListener("mouseup", () => dragging = false);
+    const dragging = reference(false);
+    window.addEventListener("mouseup", () => dragging.set(false));
     window.addEventListener("mousemove", (e) => {
-        if (dragging) {
+        if (dragging.get()) {
             x.set(e.clientX - mouseOffsetX);
             y.set(e.clientY - mouseOffsetY);
+            console.log(x.get(), y.get());
         }
     });
     return tree("div")
@@ -22,12 +23,11 @@ export default createComponent((_, slot) => {
                 styleSet()
                     .left(`${x.get()}px`)
                     .top(`${y.get()}px`),
-            [x, y]
-        ))
+            [x, y]))
         .append(slot())
         .on("mousedown", (e) => {
             mouseOffsetX = e.offsetX;
             mouseOffsetY = e.offsetY;
-            dragging = true;
+            dragging.set(true);
         });
 });
