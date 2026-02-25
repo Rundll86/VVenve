@@ -1,6 +1,6 @@
 import { createComponent, wrap, tree, sync, styleSet } from "nine";
 
-export default createComponent((_, slot) => {
+export default createComponent({}, (_, slot) => {
     const x = wrap(100);
     const y = wrap(100);
     const dragging = wrap(false);
@@ -17,12 +17,13 @@ export default createComponent((_, slot) => {
         .use(sync(
             () =>
                 styleSet()
+                    .userSelect("none")
                     .zIndex("9999")
                     .position("fixed")
                     .left(`${x.get()}px`)
                     .top(`${y.get()}px`),
             [x, y]))
-        .append(slot())
+        .append(slot)
         .on("mousedown", (e) => {
             e.preventDefault();
             mouseOffsetX = e.offsetX;

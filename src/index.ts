@@ -1,3 +1,3 @@
-import { builtins } from "./nine";
+import FloatingBall from "./components/FloatingBall";
 
-builtins.Counter({ initialValue: 10 }).mount("body");
+FloatingBall().mount("body");

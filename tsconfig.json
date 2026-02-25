@@ -12,12 +12,13 @@
         "declaration": true,
         "rootDir": "./src",
         "typeRoots": [
-            "src/nine/src/types",
             "node_modules",
-            "node_modules/@types"
+            "node_modules/@types",
+            "src/nine/src/types"
         ],
         "types": [
-            "@turbowarp/types"
+            "@turbowarp/types",
+            "module.d.ts"
         ],
         "paths": {
             "$/*": [
@@ -33,11 +34,11 @@
         "baseUrl": "."
     },
     "include": [
-        "src/**/*",
-        "src/nine/src/types/**/*"
+        "src/**/*"
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "src/nine"
     ]
 }
