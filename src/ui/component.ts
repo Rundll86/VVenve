@@ -21,8 +21,10 @@ export function normalizeTree(nodeTree: TreeResult) {
         result = tree(new Text(String(nodeTree)));
     } else if (isRenderResult(nodeTree)) {
         result = nodeTree.$;
+    } else if (!nodeTree) {
+        result = tree();
     } else {
-        result = nodeTree ?? tree(new Comment("Empty Tree"));
+        result = nodeTree;
     }
     return result;
 }

@@ -2,6 +2,7 @@ import { camelToHyphen } from "src/util/char";
 import { normalizeTree, TreeResult } from "./component";
 import { isWrapper, Wrapper } from "./reactive";
 import { StyleSet } from "./style";
+import { Empty } from "src/util/types";
 
 export type TreeContext<T extends HTMLElement = HTMLElement> = {
     [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Wrapper<T[K]>) => TreeContext<T>;
@@ -11,8 +12,8 @@ export type TreeContext<T extends HTMLElement = HTMLElement> = {
     use(styleSet: StyleSet | Wrapper<StyleSet>): TreeContext<T>;
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
-export function tree<E extends keyof HTMLElementTagNameMap>(data: E | Node) {
-    const element: Node = typeof data === "string" ? document.createElement(data) : data;
+export function tree<E extends keyof HTMLElementTagNameMap>(data?: E | Node | Empty) {
+    const element: Node = (typeof data === "string" ? document.createElement(data) : data) ?? new Comment("Empty TreeContext");
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
         append(...children: (TreeResult | Wrapper<TreeResult[]>)[]) {
