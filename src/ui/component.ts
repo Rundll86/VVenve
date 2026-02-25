@@ -18,7 +18,7 @@ export function normalizeTree(nodeTree: TreeResult) {
     if (nodeTree instanceof HTMLElement) {
         result = tree(nodeTree);
     } else if (typeof nodeTree === "string" || typeof nodeTree === "number") {
-        result = tree("span").textContent(String(nodeTree));
+        result = tree(new Text(String(nodeTree)));
     } else if (isRenderResult(nodeTree)) {
         result = nodeTree.$;
     } else {
