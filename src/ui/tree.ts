@@ -1,22 +1,22 @@
 import { normalizeTree, TreeResult } from "./component";
-import { isReference, Reference } from "./reactive";
+import { isWrapper, Wrapper } from "./reactive";
 import { StyleSet } from "./style";
 
 export type TreeContext<T extends HTMLElement = HTMLElement> = {
-    [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Reference<T[K]>) => TreeContext<T>;
+    [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Wrapper<T[K]>) => TreeContext<T>;
 } & {
     element: T;
-    append(...children: (TreeResult | Reference<TreeResult[]>)[]): TreeContext<T>;
-    use(styleSet: StyleSet | Reference<StyleSet>): TreeContext<T>;
+    append(...children: (TreeResult | Wrapper<TreeResult[]>)[]): TreeContext<T>;
+    use(styleSet: StyleSet | Wrapper<StyleSet>): TreeContext<T>;
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
 export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElement) {
     const element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
-        append(...children: (TreeResult | Reference<TreeResult[]>)[]) {
+        append(...children: (TreeResult | Wrapper<TreeResult[]>)[]) {
             for (const child of children) {
-                if (!isReference<TreeResult[]>(child)) { //插入的不是响应式，直接用
+                if (!isWrapper<TreeResult[]>(child)) { //插入的不是响应式，直接用
                     element.appendChild(normalizeTree(child).element);
                     continue;
                 }
@@ -39,13 +39,13 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
             }
             return context;
         },
-        use(styleSet: StyleSet | Reference<StyleSet>) {
+        use(styleSet: StyleSet | Wrapper<StyleSet>) {
             const update = (rules: Record<string, string>) => {
                 for (const [key, value] of Object.entries(rules)) {
                     element.style.setProperty(String(key), value);
                 }
             };
-            if (isReference<StyleSet>(styleSet)) {
+            if (isWrapper<StyleSet>(styleSet)) {
                 styleSet.event.subcribe((newData) => update(newData.rules));
                 update(styleSet.get().rules);
             } else {
@@ -62,8 +62,8 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
             if (Reflect.has(target, p)) {
                 return Reflect.get(target, p, receiver);
             } else {
-                return (data: HTMLElementTagNameMap[E][P] | Reference<HTMLElementTagNameMap[E][P]>) => {
-                    if (isReference<HTMLElementTagNameMap[E][P]>(data)) {
+                return (data: HTMLElementTagNameMap[E][P] | Wrapper<HTMLElementTagNameMap[E][P]>) => {
+                    if (isWrapper<HTMLElementTagNameMap[E][P]>(data)) {
                         const update = (newData: HTMLElementTagNameMap[E][P]) => element[p] = newData;
                         data.event.subcribe(update);
                         update(data.get());

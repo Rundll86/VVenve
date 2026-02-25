@@ -1,42 +1,97 @@
 import { EventSubcriber } from "src/channel/event-subcriber";
 
-export const referenceSymbol = Symbol("referenced");
-export type Reference<T> = {
+export const wrapperSymbol = Symbol("WrapperFlag");
+export type Wrapper<T> = {
     get(): T;
     set(newData: T): void;
+    emitEvent(newData: T, oldData: T): void;
+    updateOnly(): void;
     event: EventSubcriber<[T, T]>;
-} & { [K in typeof referenceSymbol]: true; };
-export function reference<T>(initialData: T): Reference<T> {
+} & { [K in typeof wrapperSymbol]: true; };
+export function wrap<T>(initialData: T): Wrapper<T> {
+    const arrayActions = ["push", "pop", "shift", "unshift", "splice", "sort", "reverse"];
+    const patch = (data: T) => {
+        if (!Array.isArray(data)) { return data; }
+        const { proxy, revoke: newRevoke } = Proxy.revocable(data, {
+            get(target, p: string, receiver) {
+                if (arrayActions.includes(p)) {
+                    const originalMethod = Reflect.get(target, p, receiver) as (...args: unknown[]) => unknown;
+                    if (typeof originalMethod === "function") {
+                        return (...args: unknown[]) => {
+                            let oldData = wrapper.get();
+                            if (Array.isArray(oldData)) {
+                                oldData = [...oldData] as T;
+                                const result = originalMethod(...args);
+                                wrapper.emitEvent(wrapper.get(), oldData);
+                                return result;
+                            }
+                        };
+                    } else return Reflect.get(target, p, receiver);
+                } else {
+                    return Reflect.get(target, p, receiver);
+                }
+            },
+            set(target, p, newValue, receiver) {
+                const oldValue = Reflect.get(target, p, receiver);
+                if (oldValue !== newValue) {
+                    let oldData = wrapper.get();
+                    if (Array.isArray(oldData)) {
+                        oldData = [...oldData] as T;
+                        const result = Reflect.set(target, p, newValue, receiver);
+                        wrapper.emitEvent(wrapper.get(), oldData);
+                        return result;
+                    }
+                }
+                return Reflect.set(target, p, newValue, receiver);
+            },
+        });
+        oldRevoke = newRevoke;
+        return proxy;
+    };
     const event = new EventSubcriber<[T, T]>();
-    let currentData = initialData;
-    return {
+    let oldRevoke: (() => void) | null = null;
+    let currentData = patch(initialData);
+    const wrapper: Wrapper<T> = {
         get() { return currentData; },
         set(newData) {
             if (currentData !== newData) {
                 const oldData = currentData;
-                currentData = newData;
-                event.emit(newData, oldData);
+                if (Array.isArray(oldData) && oldRevoke) {
+                    oldRevoke();
+                    currentData = patch(newData);
+                } else {
+                    currentData = newData;
+                };
+                this.emitEvent(newData, oldData);
             }
         },
+        emitEvent(newData, oldData) {
+            event.emit(newData, oldData);
+        },
+        updateOnly() {
+            this.emitEvent(this.get(), this.get());
+        },
         event,
-        [referenceSymbol]: true
+        [wrapperSymbol]: true
     };
+    return wrapper;
 }
-export function compute<T, R>(render: () => R, dependencies: Reference<T>[]): Reference<R> {
-    const internalRef = reference(render());
+export function sync<R>(effectRenderer: () => R, dependencies: unknown[] = []): Wrapper<R> {
+    const internalWrapper = wrap(effectRenderer());
     const update = () => {
-        const newData = render();
-        const currentData = internalRef.get();
+        const newData = effectRenderer();
+        const currentData = internalWrapper.get();
         const hasChanged = currentData !== newData;
         if (hasChanged) {
-            internalRef.set(newData);
+            internalWrapper.set(newData);
         }
     };
     for (const dependency of dependencies) {
+        if (!isWrapper(dependency)) continue;
         dependency.event.subcribe(update);
     }
-    return internalRef;
+    return internalWrapper;
 }
-export function isReference<T>(data: unknown): data is Reference<T> {
-    return Object.hasOwn(data, referenceSymbol) && data[referenceSymbol] === true;
+export function isWrapper<T>(data: unknown): data is Wrapper<T> {
+    return Object.hasOwn(data, wrapperSymbol) && data[wrapperSymbol] === true;
 }

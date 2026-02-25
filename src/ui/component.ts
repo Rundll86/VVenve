@@ -1,6 +1,5 @@
 import { Empty } from "src/util/types";
 import { TreeContext, tree } from "./tree";
-import { isReference, Reference } from "./reactive";
 
 export type RenderResult = {
     mount(to: string | HTMLElement): void;
@@ -10,7 +9,7 @@ export type TreeResult = HTMLElement | TreeContext | string | number | Empty | R
 export interface Component<T> {
     (props: T, slot?: () => TreeResult): RenderResult;
 }
-export const renderResultSymbol = Symbol("renderResult");
+export const renderResultSymbol = Symbol("RenderResultFlag");
 export function isRenderResult(data: unknown): data is RenderResult {
     return Object.hasOwn(data, renderResultSymbol) && data[renderResultSymbol] === true;
 }

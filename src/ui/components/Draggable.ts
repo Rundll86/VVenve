@@ -1,12 +1,12 @@
 import { createComponent } from "../component";
-import { compute, reference } from "../reactive";
+import { sync, wrap } from "../reactive";
 import { styleSet } from "../style";
 import { tree } from "../tree";
 
 export default createComponent((_, slot) => {
-    const x = reference(100);
-    const y = reference(100);
-    const dragging = reference(false);
+    const x = wrap(100);
+    const y = wrap(100);
+    const dragging = wrap(false);
     let mouseOffsetX = 0;
     let mouseOffsetY = 0;
     window.addEventListener("mouseup", () => dragging.set(false));
@@ -17,7 +17,7 @@ export default createComponent((_, slot) => {
         }
     });
     return tree("div")
-        .use(compute(
+        .use(sync(
             () =>
                 styleSet()
                     .zIndex("9999")
