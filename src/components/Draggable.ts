@@ -14,15 +14,19 @@ export default createComponent({}, (_, slot) => {
         }
     });
     return tree("div")
-        .use(sync(
-            () =>
+        .use(
+            styleSet()
+                .userSelect("none")
+                .zIndex("9999")
+                .position("fixed")
+        )
+        .use(
+            sync(() =>
                 styleSet()
-                    .userSelect("none")
-                    .zIndex("9999")
-                    .position("fixed")
                     .left(`${x.get()}px`)
-                    .top(`${y.get()}px`),
-            [x, y]))
+                    .top(`${y.get()}px`)
+                , [x, y])
+        )
         .append(slot)
         .on("mousedown", (e) => {
             e.preventDefault();
