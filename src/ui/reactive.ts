@@ -21,7 +21,7 @@ export function wrap<T>(initialData: T): Wrapper<T> {
                             let oldData = wrapper.get();
                             if (Array.isArray(oldData)) {
                                 oldData = [...oldData] as T;
-                                const result = originalMethod(...args);
+                                const result = originalMethod.call(target, ...args);
                                 wrapper.emitEvent(wrapper.get(), oldData);
                                 return result;
                             }

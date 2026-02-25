@@ -1,3 +1,4 @@
+import { camelToHyphen } from "src/util/char";
 import { normalizeTree, TreeResult } from "./component";
 import { isWrapper, Wrapper } from "./reactive";
 import { StyleSet } from "./style";
@@ -21,7 +22,8 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
                     continue;
                 }
                 let oldChildren: TreeContext[] = [];
-                const baseAnchor = element.childNodes[element.childNodes.length - 1]; //把锚点存起来，树更新时把新节点加到这个锚点后面
+                const baseAnchor = new Text(); //把锚点存起来，树更新时把新节点加到这个锚点后面
+                element.appendChild(baseAnchor);
                 const update = (newTrees: TreeResult[]) => {
                     const newChildren: TreeContext[] = [];
                     for (const newTree of newTrees) {
@@ -42,7 +44,7 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
         use(styleSet: StyleSet | Wrapper<StyleSet>) {
             const update = (rules: Record<string, string>) => {
                 for (const [key, value] of Object.entries(rules)) {
-                    element.style.setProperty(String(key), value);
+                    element.style.setProperty(camelToHyphen(String(key)), value);
                 }
             };
             if (isWrapper<StyleSet>(styleSet)) {
