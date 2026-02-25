@@ -23,8 +23,8 @@
             "$/*": [
                 "src/obtain/*"
             ],
-            "nine/*": [
-                "src/nine/*"
+            "@asset/*": [
+                "src/assets/*"
             ],
             "nine": [
                 "src/nine"
