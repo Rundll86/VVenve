@@ -22,7 +22,7 @@ export function normalizeTree(nodeTree: TreeResult) {
     } else if (isRenderResult(nodeTree)) {
         result = nodeTree.$;
     } else if (!nodeTree) {
-        result = tree();
+        result = tree(new Comment("Empty tree context"));
     } else {
         result = nodeTree;
     }
