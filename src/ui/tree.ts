@@ -23,7 +23,7 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data?: E | Node | Em
                     continue;
                 }
                 let oldChildren: TreeContext[] = [];
-                const baseAnchor = new Text(); //把锚点存起来，树更新时把新节点加到这个锚点后面
+                const baseAnchor = new Comment("Just an anchor"); //把锚点存起来，树更新时把新节点加到这个锚点后面
                 element.appendChild(baseAnchor);
                 const update = (newTrees: TreeResult[]) => {
                     const newChildren: TreeContext[] = [];

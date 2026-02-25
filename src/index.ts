@@ -1,7 +1,9 @@
-import vm from "$/vm";
-import Desk from "./ui/components/Desk";
-import Logo from "./ui/components/Logo";
+import * as assets from "./assets";
 
-Logo().mount("body");
-Desk().mount("body");
-console.log(vm);
+export function getAsset(name: keyof typeof assets) {
+    return assets[name];
+}
+
+export * from "./channel";
+export * from "./ui";
+export * from "./util";
