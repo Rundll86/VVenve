@@ -11,8 +11,8 @@ export type TreeContext<T extends HTMLElement = HTMLElement> = {
     use(styleSet: StyleSet | Wrapper<StyleSet>): TreeContext<T>;
     on<E extends keyof HTMLElementEventMap>(key: E, handler: (data: HTMLElementEventMap[E]) => void, options?: AddEventListenerOptions): TreeContext<T>;
 };
-export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElement) {
-    const element: HTMLElement = typeof data === "string" ? document.createElement(data) : data;
+export function tree<E extends keyof HTMLElementTagNameMap>(data: E | Node) {
+    const element: Node = typeof data === "string" ? document.createElement(data) : data;
     const context: TreeContext<HTMLElementTagNameMap[E]> = new Proxy({
         element,
         append(...children: (TreeResult | Wrapper<TreeResult[]>)[]) {
@@ -42,25 +42,29 @@ export function tree<E extends keyof HTMLElementTagNameMap>(data: E | HTMLElemen
             return context;
         },
         use(styleSet: StyleSet | Wrapper<StyleSet>) {
-            const update = (rules: Record<string, string>) => {
-                for (const [key, value] of Object.entries(rules)) {
-                    element.style.setProperty(camelToHyphen(String(key)), value);
+            if (element instanceof HTMLElement) {
+                const update = (rules: Record<string, string>) => {
+                    for (const [key, value] of Object.entries(rules)) {
+                        element.style.setProperty(camelToHyphen(String(key)), value);
+                    }
+                };
+                if (isWrapper<StyleSet>(styleSet)) {
+                    styleSet.event.subcribe((newData) => update(newData.rules));
+                    update(styleSet.get().rules);
+                } else {
+                    update(styleSet.rules);
                 }
-            };
-            if (isWrapper<StyleSet>(styleSet)) {
-                styleSet.event.subcribe((newData) => update(newData.rules));
-                update(styleSet.get().rules);
-            } else {
-                update(styleSet.rules);
             }
             return context;
         },
         on(key, handler, options) {
-            element.addEventListener(key, handler, options);
+            if (element instanceof HTMLElement) {
+                element.addEventListener(key, handler, options);
+            }
             return context;
         },
     } as TreeContext<HTMLElementTagNameMap[E]>, {
-        get<P extends keyof HTMLElement>(target: Record<string, unknown>, p: P, receiver: unknown) {
+        get<P extends keyof Node>(target: Record<string, unknown>, p: P, receiver: unknown) {
             if (Reflect.has(target, p)) {
                 return Reflect.get(target, p, receiver);
             } else {

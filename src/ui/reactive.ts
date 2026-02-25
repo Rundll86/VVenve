@@ -1,4 +1,5 @@
 import { EventSubcriber } from "src/channel/event-subcriber";
+import { TreeResult } from "./component";
 
 export const wrapperSymbol = Symbol("WrapperFlag");
 export type Wrapper<T> = {
@@ -91,6 +92,17 @@ export function sync<R>(effectRenderer: () => R, dependencies: unknown[] = []): 
         dependency.event.subcribe(update);
     }
     return internalWrapper;
+}
+export function when(condition: Wrapper<boolean> | (() => boolean), tree: TreeResult, dependencies: unknown[] = []) {
+    return sync(() => {
+        let result: boolean;
+        if (typeof condition === "function") {
+            result = condition();
+        } else {
+            result = condition.get();
+        }
+        return [result ? tree : null];
+    }, dependencies);
 }
 export function isWrapper<T>(data: unknown): data is Wrapper<T> {
     return Object.hasOwn(data, wrapperSymbol) && data[wrapperSymbol] === true;

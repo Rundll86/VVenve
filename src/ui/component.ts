@@ -11,7 +11,7 @@ export interface Component<T> {
 }
 export const renderResultSymbol = Symbol("RenderResultFlag");
 export function isRenderResult(data: unknown): data is RenderResult {
-    return Object.hasOwn(data, renderResultSymbol) && data[renderResultSymbol] === true;
+    return !!data && Object.hasOwn(data, renderResultSymbol) && data[renderResultSymbol] === true;
 }
 export function normalizeTree(nodeTree: TreeResult) {
     let result: TreeContext;
@@ -22,7 +22,7 @@ export function normalizeTree(nodeTree: TreeResult) {
     } else if (isRenderResult(nodeTree)) {
         result = nodeTree.$;
     } else {
-        result = nodeTree ?? tree("div");
+        result = nodeTree ?? tree(new Comment("Empty Tree"));
     }
     return result;
 }

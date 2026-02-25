@@ -1,11 +1,12 @@
 import { createComponent, TreeResult } from "../component";
-import { sync, wrap } from "../reactive";
+import { sync, when, wrap } from "../reactive";
 import { styleSet } from "../style";
 import { tree } from "../tree";
 
 export default createComponent(() => {
     const list1 = wrap<string[]>([]);
     const list2 = wrap<string[]>([]);
+    const state = wrap(false);
     return tree("div")
         .use(
             styleSet()
@@ -20,11 +21,9 @@ export default createComponent(() => {
             "列表2如下：",
             sync<TreeResult[]>(() => list2.get(), [list2]),
             "结束！",
-            tree("button").textContent("列表1增加").on("click", () => {
-                list1.get().push(String(Math.random()));
-            }),
-            tree("button").textContent("列表2增加").on("click", () => {
-                list2.get().push(String(Math.random()));
-            })
+            tree("button").textContent("列表1增加").on("click", () => list1.get().push(String(Math.random()))),
+            tree("button").textContent("列表2增加").on("click", () => list2.get().push(String(Math.random()))),
+            tree("button").textContent("切换状态").on("click", () => state.set(!state.get())),
+            when(() => state.get(), "我显示了！", [state])
         );
 });
