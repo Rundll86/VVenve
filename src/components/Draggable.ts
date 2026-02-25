@@ -1,7 +1,4 @@
-import { createComponent } from "../component";
-import { sync, wrap } from "../reactive";
-import { styleSet } from "../style";
-import { tree } from "../tree";
+import { createComponent, wrap, tree, sync, styleSet } from "nine";
 
 export default createComponent((_, slot) => {
     const x = wrap(100);

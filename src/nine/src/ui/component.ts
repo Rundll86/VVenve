@@ -1,4 +1,4 @@
-import { Empty } from "src/util/types";
+import { Empty } from "@/util/types";
 import { TreeContext, tree } from "./tree";
 
 export type RenderResult = {

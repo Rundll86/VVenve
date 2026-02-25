@@ -1,14 +1,11 @@
-import { createComponent } from "../component";
-import { tree } from "../tree";
-import logo from "../../assets/logo.svg";
+import { createComponent, tree, styleSet, getAsset } from "nine";
 import Draggable from "./Draggable";
-import { styleSet } from "../style";
 
 export default createComponent(
     () =>
         Draggable(undefined,
             () => tree("img")
-                .src(logo)
+                .src(getAsset("Logo"))
                 .use(
                     styleSet()
                         .width("50px")

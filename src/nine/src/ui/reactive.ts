@@ -1,4 +1,4 @@
-import { EventSubcriber } from "src/channel/event-subcriber";
+import { EventSubcriber } from "@/channel/event-subcriber";
 import { TreeResult } from "./component";
 
 export const wrapperSymbol = Symbol("WrapperFlag");

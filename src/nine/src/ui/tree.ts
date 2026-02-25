@@ -1,8 +1,8 @@
-import { camelToHyphen } from "src/util/char";
+import { camelToHyphen } from "@/util/char";
 import { normalizeTree, TreeResult } from "./component";
 import { isWrapper, Wrapper } from "./reactive";
 import { StyleSet } from "./style";
-import { Empty } from "src/util/types";
+import { Empty } from "@/util/types";
 
 export type TreeContext<T extends HTMLElement = HTMLElement> = {
     [K in keyof T as T[K] extends (...args: unknown[]) => unknown ? never : K]: (data: T[K] | Wrapper<T[K]>) => TreeContext<T>;

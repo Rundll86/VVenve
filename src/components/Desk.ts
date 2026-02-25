@@ -1,7 +1,4 @@
-import { createComponent, TreeResult } from "../component";
-import { sync, when, wrap } from "../reactive";
-import { styleSet } from "../style";
-import { tree } from "../tree";
+import { createComponent, styleSet, sync, tree, TreeResult, when, wrap } from "nine";
 
 export default createComponent(() => {
     const list1 = wrap<string[]>([]);
