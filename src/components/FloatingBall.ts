@@ -1,29 +1,30 @@
 import { createComponent, styleSet, tree } from "nine";
-import Draggable from "./Draggable";
-import logo from "@asset/logo.svg";
 
-export default createComponent({}, () => {
-    return Draggable({},
-        tree("div")
-            .use(
-                styleSet()
-                    .width("60px")
-                    .height("60px")
-                    .display("flex")
-                    .alignItems("center")
-                    .justifyContent("center")
-                    .backgroundColor("blue")
-                    .borderRadius("50%")
-                    .padding("10px")
-            )
-            .append(
-                tree("img")
-                    .src(logo)
-                    .use(
-                        styleSet()
-                            .width("50px")
-                            .height("50px")
-                    )
-            )
-    );
+export default createComponent({
+    styles: [
+        styleSet(".ball")
+            .width("50px")
+            .height("50px")
+            .display("flex")
+            .alignItems("start")
+            .justifyContent("center")
+            .backgroundColor("rgb(176, 255, 221)")
+            .padding("10px")
+            .transition("all .2s ease-out")
+            .clipPath("polygon(0 10%,100% 10%,50% 100%)"),
+        styleSet(".ball:hover")
+            .transform("rotate(180deg)")
+    ]
+}, () => {
+    return tree("div")
+        .className("ball")
+        .append(
+            tree("span")
+                .textContent("▲")
+                .use(
+                    styleSet()
+                        .color("orange")
+                        .fontSize("30px")
+                )
+        );
 });

@@ -27,7 +27,10 @@ export default createComponent({}, (_, slot) => {
                     .top(`${y.get()}px`)
                 , [x, y])
         )
-        .append(slot)
+        .append(
+            tree("div")
+                .append(slot())
+        )
         .on("mousedown", (e) => {
             e.preventDefault();
             mouseOffsetX = e.offsetX;
