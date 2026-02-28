@@ -25,7 +25,8 @@ export default createComponent({
             .position("fixed"),
         styleSet(".dragger [data-region]:hover")
             .cursor("move")
-    ]
+    ],
+    uuid: "Draggable"
 }, ({ x, y }, slots) => {
     x.event.subcribe(newX => newX < 0 ? x.set(0) : null);
     y.event.subcribe(newY => newY < 0 ? y.set(0) : null);

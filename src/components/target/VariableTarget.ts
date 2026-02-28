@@ -1,8 +1,9 @@
-import { createComponent, styleSet, sync, tree, typed, when } from "nine";
+import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nine";
 import Label from "../Label";
 import { WrappedVariable } from "src/state/vm";
 import Button from "../Button";
 import { watchingVariables } from "src/state/watch";
+import ValueInput from "../ValueInput";
 
 export default createComponent({
     props: {
@@ -34,30 +35,45 @@ export default createComponent({
             .textWrap("nowrap")
             .textWrapMode("nowrap"),
         styleSet(".right")
-            .marginLeft("auto")
+            .marginLeft("auto"),
+        styleSet(".var-watcher")
+            .display("flex")
+            .flexDirection("column"),
+        styleSet(".watcher"),
     ],
     uuid: "VariableTarget"
 }, ({ data, watching }) => {
     return tree("div")
-        .class("var")
+        .class("var-watcher")
         .append(
-            tree("span").class("indent"),
-            Label({ text: data.get().isList ? "列表" : "变量" }),
-            tree("span").class("text").append(data.get().name),
+            tree("div")
+                .class("var")
+                .append(
+                    tree("span").class("indent"),
+                    Label({ text: data.get().isList ? "列表" : "变量" }),
+                    tree("span").class("text").append(data.get().name),
+                    when(
+                        () => !watching.get(),
+                        () => Button({
+                            text: sync(() =>
+                                watchingVariables.get().includes(data.get()) ? "🔪" : "👁️",
+                                [watchingVariables])
+                        }).$
+                            .class("right")
+                            .on.stop("click", () => {
+                                const watchings = watchingVariables.get();
+                                if (watchings.includes(data.get())) watchingVariables.set(watchings.filter(e => e !== data.get()));
+                                else watchings.push(data.get());
+                            })
+                        , [watching]
+                    )
+                ),
             when(
-                () => !watching.get(),
-                () => Button({
-                    text: sync(() =>
-                        watchingVariables.get().includes(data.get()) ? "🔪" : "👁️",
-                        [watchingVariables])
-                }).$
-                    .class("right")
-                    .on.stop("click", () => {
-                        const watchings = watchingVariables.get();
-                        if (watchings.includes(data.get())) watchingVariables.set(watchings.filter(e => e !== data.get()));
-                        else watchings.push(data.get());
-                    })
-                , [watching]
+                watching,
+                () =>
+                    tree("div")
+                        .class("watcher")
+                        .append(ValueInput({ value: data.get().value as Wrapper<string> }))
             )
         );
 });

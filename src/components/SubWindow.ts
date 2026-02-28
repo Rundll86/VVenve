@@ -50,7 +50,8 @@ export default createComponent({
     slots: [
         defineSlot("title", { template: defineTemplate<string>() }),
         defineSlot("content", { template: defineTemplate() })
-    ]
+    ],
+    uuid: "SubWindow"
 }, ({ x, y, title, showing }, slots) => {
     return Draggable({ x, y }, {
         content: () =>

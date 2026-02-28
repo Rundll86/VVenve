@@ -20,7 +20,8 @@ export default createComponent({
         styleSet(".logo")
             .width("40px")
             .height("40px")
-    ]
+    ],
+    uuid: "Triangle"
 }, () => {
     return tree("div").append(
         when(() => !mainShowing.get(),
