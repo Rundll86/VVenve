@@ -1,27 +1,21 @@
 import { $, createComponent, styleSet, sync, tree, when, wrap } from "nine";
 import SubWindow from "../SubWindow";
 import Logo from "../Logo";
-import { getTargets, isVMObtained } from "../../state/vm";
+import { isVMObtained, wrappedVM } from "../../state/vm";
 import vm from "$/vm";
 import SpriteTarget from "../target/SpriteTarget";
 import Button from "../Button";
+import { mainShowing, watcherShowing } from "src/state/window";
 
 export default createComponent({
-    props: {
-        hidding: {
-            transform: Boolean,
-            uploadable: true,
-            required: true
-        }
-    },
     styles: [
         styleSet(".sprites")
             .display("flex")
             .flexDirection("column")
             .maxWidth("50vw")
     ]
-}, ({ hidding }) => {
-    return SubWindow({ x: wrap(100), y: wrap(100), hidding }, {
+}, () => {
+    return SubWindow({ x: wrap(100), y: wrap(100), showing: mainShowing }, {
         title: () => Logo(),
         content: () =>
             tree("div")
@@ -38,7 +32,8 @@ export default createComponent({
                             tree("div")
                                 .class("sprites")
                                 .append(
-                                    $(sync(() => getTargets().map(t => SpriteTarget({ data: t }))))
+                                    Button({ text: "视奸变量" }).$.on("click", () => watcherShowing.set(true)),
+                                    $(sync(() => wrappedVM.targets.map(t => SpriteTarget({ data: t }))))
                                 )
                     )
                 )

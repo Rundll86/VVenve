@@ -1,5 +1,6 @@
 import { createComponent, styleSet, tree, when } from "nine";
 import logo from "@asset/logo.svg";
+import { mainShowing } from "src/state/window";
 
 export default createComponent({
     styles: [
@@ -19,21 +20,16 @@ export default createComponent({
         styleSet(".logo")
             .width("40px")
             .height("40px")
-    ],
-    props: {
-        showing: {
-            transform: Boolean,
-            required: true,
-            uploadable: true
-        }
-    }
-}, ({ showing }) => {
+    ]
+}, () => {
     return tree("div").append(
-        when(showing, () =>
-            tree("div")
-                .on("click", () => showing.set(false))
-                .class("ball")
-                .append(tree("img").class("logo").src(logo))
+        when(() => !mainShowing.get(),
+            () =>
+                tree("div")
+                    .on("click", () => mainShowing.set(true))
+                    .class("ball")
+                    .append(tree("img").class("logo").src(logo)),
+            [mainShowing]
         )
     );
 });

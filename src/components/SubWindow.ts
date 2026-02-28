@@ -19,7 +19,7 @@ export default createComponent({
         title: {
             transform: String
         },
-        hidding: {
+        showing: {
             transform: Boolean,
             uploadable: true,
             required: true
@@ -31,6 +31,7 @@ export default createComponent({
             .backgroundColor("white")
             .display("flex")
             .flexDirection("column")
+            .overflow("hidden")
             .borderRadius("10px"),
         styleSet(".window:has(.title-bar:hover)")
             .borderColor("orange"),
@@ -50,11 +51,11 @@ export default createComponent({
         defineSlot("title", { template: defineTemplate<string>() }),
         defineSlot("content", { template: defineTemplate() })
     ]
-}, ({ x, y, title, hidding }, slots) => {
+}, ({ x, y, title, showing }, slots) => {
     return Draggable({ x, y }, {
         content: () =>
             tree("div").append(
-                when(() => !hidding.get(),
+                when(showing,
                     () => tree("div")
                         .class("window")
                         .append(
@@ -62,13 +63,13 @@ export default createComponent({
                                 .class("title-bar")
                                 .append(
                                     slots.title(title),
-                                    Button({ text: "🔴" }).$.on("click", () => hidding.set(true))
+                                    Button({ text: "🔴" }).$.on("click", () => showing.set(false))
                                 )
                                 .data({ region: "true" }),
                             tree("div")
                                 .class("content")
                                 .append(slots.content())
-                        ), [hidding])
+                        ))
             )
     });
 });

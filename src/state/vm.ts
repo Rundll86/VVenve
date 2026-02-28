@@ -10,15 +10,14 @@ export interface WrappedVariable {
 export interface WrappedTarget {
     name: string;
     variables: WrappedVariable[];
+    isStage: boolean;
 }
 export interface WrappedVM {
     targets: WrappedTarget[];
 }
 
 export const isVMObtained = !!vm;
-export function getTargets() {
-    return vm?.runtime.targets ?? [];
-}
+
 export const wrappedVM: WrappedVM = {
     targets: [...vm?.runtime.targets ?? []].map(t => ({
         name: t.getName(),
@@ -26,6 +25,7 @@ export const wrappedVM: WrappedVM = {
             name: v.name,
             value: wrapVariable(v),
             isList: v.type === "list"
-        }))
+        })),
+        isStage: t.isStage
     }))
 };
