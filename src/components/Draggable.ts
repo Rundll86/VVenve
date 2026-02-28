@@ -27,6 +27,8 @@ export default createComponent({
             .cursor("move")
     ]
 }, ({ x, y }, slots) => {
+    x.event.subcribe(newX => newX < 0 ? x.set(0) : null);
+    y.event.subcribe(newY => newY < 0 ? y.set(0) : null);
     const dragging = wrap(false);
     let mouseOffsetX = 0;
     let mouseOffsetY = 0;

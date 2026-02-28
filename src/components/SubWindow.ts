@@ -32,8 +32,12 @@ export default createComponent({
         styleSet(".title-bar")
             .backgroundColor("rgba(0,0,0,0.1)")
             .padding("5px"),
+        styleSet(".title-bar:hover")
+            .backgroundColor("orange"),
         styleSet(".content")
             .padding("20px")
+            .maxHeight("80vh")
+            .overflow("auto")
     ],
     slots: [
         defineSlot("title", { template: defineTemplate<string>() }),

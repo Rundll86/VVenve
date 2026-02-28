@@ -10,7 +10,6 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "declaration": true,
-        "rootDir": "./src",
         "typeRoots": [
             "node_modules",
             "node_modules/@types",
@@ -21,15 +20,15 @@
             "module.d.ts"
         ],
         "paths": {
+            "nine": [
+                "src/nine"
+            ],
             "$/*": [
                 "src/obtain/*"
             ],
             "@asset/*": [
                 "src/assets/*"
             ],
-            "nine": [
-                "src/nine"
-            ]
         },
         "baseUrl": "."
     },

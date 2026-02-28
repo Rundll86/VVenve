@@ -1,5 +1,3 @@
-import type VM from "scratch-vm";
-
 interface ReactFiber {
     memoizedProps?: {
         vm: VM;
