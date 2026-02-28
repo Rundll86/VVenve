@@ -2,7 +2,7 @@ import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nin
 import Label from "../Label";
 import { WrappedVariable } from "src/state/vm";
 import Button from "../Button";
-import { watchingVariables } from "src/state/watch";
+import { removeWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
 
 export default createComponent({
@@ -56,14 +56,13 @@ export default createComponent({
                         () => !watching.get(),
                         () => Button({
                             text: sync(() =>
-                                watchingVariables.get().includes(data.get()) ? "🔪" : "👁️",
-                                [watchingVariables])
+                                watchings.get().includes(data.get()) ? "🔪" : "👁️",
+                                [watchings])
                         }).$
                             .class("right")
                             .on.stop("click", () => {
-                                const watchings = watchingVariables.get();
-                                if (watchings.includes(data.get())) watchingVariables.set(watchings.filter(e => e !== data.get()));
-                                else watchings.push(data.get());
+                                if (watchings.get().includes(data.get())) removeWatching(data.get());
+                                else watchings.get().push(data.get());
                             })
                         , [watching]
                     )
@@ -75,5 +74,9 @@ export default createComponent({
                         .class("watcher")
                         .append(ValueInput({ value: data.get().value as Wrapper<string> }))
             )
-        );
+        ).on("click", () => {
+            if (watching.get()) {
+                removeWatching(data.get());
+            }
+        });
 });

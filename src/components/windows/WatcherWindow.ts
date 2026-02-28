@@ -1,6 +1,6 @@
 import { createComponent, styleSet, sync, tree, wrap } from "nine";
 import SubWindow from "../SubWindow";
-import { watchingVariables } from "src/state/watch";
+import { watchings } from "src/state/watch";
 import { watcherShowing } from "src/state/window";
 import VariableTarget from "../target/VariableTarget";
 
@@ -21,8 +21,8 @@ export default createComponent({
                         .class("vars")
                         .append(
                             sync(() =>
-                                watchingVariables.get().map(v => VariableTarget({ data: v, watching: true }))
-                                , [watchingVariables]
+                                watchings.get().map(v => VariableTarget({ data: v, watching: true }))
+                                , [watchings]
                             )
                         )
                 )
