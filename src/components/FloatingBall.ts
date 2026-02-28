@@ -17,10 +17,10 @@ export default createComponent({
     ]
 }, () => {
     return tree("div")
-        .className("ball")
+        .class("ball")
         .append(
             tree("span")
-                .textContent("▲")
+                .append("▲")
                 .use(
                     styleSet()
                         .color("orange")

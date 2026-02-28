@@ -1,12 +1,17 @@
 import { defineConfig } from "tsup";
 
-export default defineConfig({
-    entry: ["src/index.ts"],
-    splitting: false,
-    sourcemap: true,
-    clean: true,
-    minify: true,
-    loader: {
-        ".svg": "dataurl"
-    }
+export default defineConfig(options => {
+    const isDevelopment = options.env?.NODE_ENV === "development";
+
+    return {
+        entry: ["src/index.ts"],
+        splitting: false,
+        sourcemap: isDevelopment,
+        dts: true,
+        clean: true,
+        minify: !isDevelopment,
+        loader: {
+            ".svg": "dataurl"
+        },
+    };
 });

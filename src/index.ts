@@ -1,4 +1,3 @@
-import Draggable from "./components/Draggable";
-import FloatingBall from "./components/FloatingBall";
+import MainWindow from "./components/windows/MainWindow";
 
-Draggable({}, FloatingBall()).mount("body");
+MainWindow().mount("body");
