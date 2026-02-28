@@ -7,14 +7,21 @@ import SpriteTarget from "../target/SpriteTarget";
 import Button from "../Button";
 
 export default createComponent({
+    props: {
+        hidding: {
+            transform: Boolean,
+            uploadable: true,
+            required: true
+        }
+    },
     styles: [
         styleSet(".sprites")
             .display("flex")
             .flexDirection("column")
             .maxWidth("50vw")
     ]
-}, () => {
-    return SubWindow({ x: wrap(100), y: wrap(100) }, {
+}, ({ hidding }) => {
+    return SubWindow({ x: wrap(100), y: wrap(100), hidding }, {
         title: () => Logo(),
         content: () =>
             tree("div")

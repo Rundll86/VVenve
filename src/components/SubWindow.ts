@@ -1,6 +1,6 @@
-import { createComponent, defineSlot, defineTemplate, styleSet, tree } from "nine";
+import { createComponent, defineSlot, defineTemplate, styleSet, tree, when } from "nine";
 import Draggable from "./Draggable";
-import Logo from "./Logo";
+import Button from "./Button";
 
 export default createComponent({
     props: {
@@ -18,6 +18,11 @@ export default createComponent({
         },
         title: {
             transform: String
+        },
+        hidding: {
+            transform: Boolean,
+            uploadable: true,
+            required: true
         }
     },
     styles: [
@@ -31,6 +36,8 @@ export default createComponent({
             .borderColor("orange"),
         styleSet(".title-bar")
             .backgroundColor("rgba(0,0,0,0.1)")
+            .display("flex")
+            .alignItems("center")
             .padding("5px"),
         styleSet(".title-bar:hover")
             .backgroundColor("orange"),
@@ -43,19 +50,25 @@ export default createComponent({
         defineSlot("title", { template: defineTemplate<string>() }),
         defineSlot("content", { template: defineTemplate() })
     ]
-}, ({ x, y, title }, slots) => {
+}, ({ x, y, title, hidding }, slots) => {
     return Draggable({ x, y }, {
         content: () =>
-            tree("div")
-                .class("window")
-                .append(
-                    tree("div")
-                        .class("title-bar")
-                        .append(slots.title(title))
-                        .data({ region: "true" }),
-                    tree("div")
-                        .class("content")
-                        .append(slots.content())
-                )
+            tree("div").append(
+                when(() => !hidding.get(),
+                    () => tree("div")
+                        .class("window")
+                        .append(
+                            tree("div")
+                                .class("title-bar")
+                                .append(
+                                    slots.title(title),
+                                    Button({ text: "🔴" }).$.on("click", () => hidding.set(true))
+                                )
+                                .data({ region: "true" }),
+                            tree("div")
+                                .class("content")
+                                .append(slots.content())
+                        ), [hidding])
+            )
     });
 });

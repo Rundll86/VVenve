@@ -1,4 +1,4 @@
-import { createComponent, styleSet, tree, typed } from "nine";
+import { createComponent, styleSet, sync, tree, typed } from "nine";
 import Label from "../Label";
 import { WrappedVariable } from "src/state/vm";
 import Button from "../Button";
@@ -34,6 +34,16 @@ export default createComponent({
             tree("span").class("indent"),
             Label({ text: data.get().isList ? "列表" : "变量" }),
             tree("span").class("text").append(data.get().name),
-            Button({ text: "👁️" }).$.on("click", () => watchingVariables.get().push(data.get()))
+            Button({
+                text: sync(() =>
+                    watchingVariables.get().includes(data.get()) ? "🔪" : "👁️",
+                    [watchingVariables])
+            }).$
+                .class("right")
+                .on.stop("click", () => {
+                    const watchings = watchingVariables.get();
+                    if (watchings.includes(data.get())) watchingVariables.set(watchings.filter(e => e !== data.get()));
+                    else watchings.push(data.get());
+                })
         );
 });
