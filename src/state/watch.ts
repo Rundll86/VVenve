@@ -8,7 +8,6 @@ export function removeWatching(data: Wrapper<WrappedVariable>) {
 }
 export function addWatching(data: Wrapper<WrappedVariable>) {
     watchings.get().push(data);
-    data.get().value.event.subcribe(console.log);
 }
 export function isWatching(data: Wrapper<WrappedVariable>) {
     return watchings.get().includes(data);

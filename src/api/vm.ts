@@ -1,19 +1,15 @@
 import { wrap, Wrapper } from "nine";
-import { wrapVariable } from "./variable";
 import { WrappedTarget } from "src/components/target/SpriteTarget";
 import { wrapTarget } from "./target";
 import { patchArray } from "src/state/patch/array";
 
 export interface WrappedVM {
-    targets: Wrapper<WrappedTarget>[];
+    targets: WrappedTarget[];
 }
 export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
     const cast = (scratchTargets: VM.Target[]) => {
-        const wrappedTargets = scratchTargets.map(wrapTarget)
+        const wrappedTargets = scratchTargets.map(wrapTarget);
         wrapper.get().targets = wrappedTargets;
-        for (const wrappedTarget of wrappedTargets) {
-            wrappedTarget
-        }
     };
     const wrapper = wrap<WrappedVM>({
         targets: []

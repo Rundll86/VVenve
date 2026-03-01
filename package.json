@@ -10,9 +10,9 @@
         "dev:tsc": "tsc --watch",
         "build": "tsup --env.NODE_ENV production",
         "build:tsc": "tsc",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "check-type": "tsc --noEmit"
+        "lint": "run-s lint:*",
+        "lint:es": "eslint . --fix",
+        "lint:type": "tsc --noEmit"
     },
     "keywords": [],
     "author": "",

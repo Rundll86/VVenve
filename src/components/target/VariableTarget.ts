@@ -1,4 +1,4 @@
-import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nine";
+import { createComponent, styleSet, sync, tree, typed, when } from "nine";
 import Label from "../Label";
 import { isWatching, removeWatching, toggleWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
@@ -6,14 +6,14 @@ import { ScratchValue } from "src/api/variable";
 
 export interface WrappedVariable {
     name: string;
-    value: Wrapper<ScratchValue>;
+    value: ScratchValue;
     isList: boolean
 }
 export default createComponent({
     props: {
         data: {
             transform: typed<WrappedVariable>(),
-            required: true
+            required: true,
         },
         watching: {
             transform: Boolean,
@@ -75,7 +75,7 @@ export default createComponent({
                 () =>
                     tree("div")
                         .class("watcher")
-                        .append(ValueInput({ value: data.get().value as Wrapper<string> }))
+                        .append(ValueInput({ value: "just test" }))
             )
         ).on("click", () => {
             if (watching.get()) {

@@ -1,17 +1,17 @@
-import { $, createComponent, styleSet, sync, tree, typed, when, wrap, Wrapper } from "nine";
+import { $, createComponent, styleSet, sync, tree, typed, when } from "nine";
 import VariableTarget, { WrappedVariable } from "./VariableTarget";
 import Label from "../Label";
 
 export interface WrappedTarget {
     name: string;
-    variables: Wrapper<WrappedVariable>[];
+    variables: WrappedVariable[];
     isStage: boolean;
 }
 export default createComponent({
     props: {
         data: {
             transform: typed<WrappedTarget>(),
-            required: true
+            required: true,
         },
         showing: {
             transform: Boolean,

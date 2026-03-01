@@ -1,31 +1,29 @@
-import { wrap, Wrapper } from "nine";
 import { WrappedVariable } from "src/components/target/VariableTarget";
 
 export type ScratchValue = VM.ScratchCompatibleValue | VM.ScratchList;
-export function wrapVariable(scratchVariable: VM.Variable): Wrapper<WrappedVariable> {
-    const valueWrapper: Wrapper<ScratchValue> = wrap(scratchVariable.value);
-    const wrapper: Wrapper<WrappedVariable> = wrap({
+export function wrapVariable(scratchVariable: VM.Variable): WrappedVariable {
+    const variable: WrappedVariable = {
         name: scratchVariable.name,
-        value: valueWrapper,
+        value: scratchVariable.value,
         isList: scratchVariable.type === "list"
-    });
+    };
     Object.defineProperty(scratchVariable, "value", {
         configurable: true,
         set(newValue) {
-            valueWrapper.set(newValue);
+            variable.value = newValue;
         },
         get() {
-            return valueWrapper.get();
+            return variable.value;
         },
     });
     Object.defineProperty(scratchVariable, "name", {
         configurable: true,
         set(newValue) {
-            wrapper.get().name = newValue;
+            variable.name = newValue;
         },
         get() {
-            return wrapper.get().name;
+            return variable.name;
         },
     });
-    return wrapper;
+    return variable;
 }

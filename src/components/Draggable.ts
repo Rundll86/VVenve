@@ -1,4 +1,5 @@
 import { createComponent, wrap, tree, sync, styleSet, defineSlot, defineTemplate } from "nine";
+import { use } from "src/util/data";
 
 export default createComponent({
     props: {
@@ -40,6 +41,7 @@ export default createComponent({
             y.set(y.get() + e.movementY);
         }
     });
+    use(mouseOffsetX, mouseOffsetY);
     return tree("div")
         .class("dragger")
         .use(
@@ -47,7 +49,7 @@ export default createComponent({
                 styleSet()
                     .left(`${x.get()}px`)
                     .top(`${y.get()}px`)
-                , [x, y])
+            , [x, y])
         )
         .append(
             tree("div")

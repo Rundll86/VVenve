@@ -6,7 +6,7 @@ const mill = async (time: number) => new Promise<void>(resolve => setTimeout(res
     const browser = await chromium.launch({
         headless: false,
         args: [
-            '--auto-open-devtools-for-tabs',
+            "--auto-open-devtools-for-tabs",
             "--start-maximized"
         ],
     });

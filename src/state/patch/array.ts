@@ -1,7 +1,7 @@
 import { EventSubcriber, structWatchers, } from "nine";
 
 export function patchArray<O extends object, K extends keyof O, T = O[K]>(obj: O, key: K) {
-    const updatedEvent = new EventSubcriber<[T]>()
+    const updatedEvent = new EventSubcriber<[T]>();
     const hooks = {
         set: new EventSubcriber<[T]>({ bubbleable: true }, updatedEvent),
         modified: new EventSubcriber<[T]>({ bubbleable: true }, updatedEvent),

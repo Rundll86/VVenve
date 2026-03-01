@@ -22,7 +22,7 @@ export default createComponent({
                         .append(
                             sync(() =>
                                 watchings.get().map(v => VariableTarget({ data: v, watching: true }))
-                                , [watchings]
+                            , [watchings]
                             )
                         )
                 )

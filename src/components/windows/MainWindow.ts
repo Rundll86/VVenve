@@ -42,10 +42,10 @@ export default createComponent({
                                     Button({ text: "视奸变量" }).$.on("click", () => watcherShowing.set(true)),
                                     $(sync(
                                         () => wrappedVM!.get().targets.map(t => {
-                                            if (!targetShowing[t.get().name]) targetShowing[t.get().name] = wrap(false);
+                                            if (!targetShowing[t.name]) targetShowing[t.name] = wrap(false);
                                             return SpriteTarget({
                                                 data: t,
-                                                showing: targetShowing[t.get().name]
+                                                showing: targetShowing[t.name]
                                             });
                                         }),
                                         [wrappedVM]
