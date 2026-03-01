@@ -1,6 +1,5 @@
 import { createComponent, styleSet, sync, tree, typed, when, Wrapper } from "nine";
 import Label from "../Label";
-import Button from "../Button";
 import { isWatching, removeWatching, toggleWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
 import { ScratchValue } from "src/api/variable";
@@ -53,19 +52,21 @@ export default createComponent({
         .append(
             tree("div")
                 .class("var")
+                .on("click", () => toggleWatching(data))
                 .append(
                     tree("span").class("indent"),
                     Label({ text: data.get().isList ? "列表" : "变量" }),
-                    tree("span").class("text").append(data.get().name),
+                    tree("span").class("text").append(sync(() => data.get().name, [data])),
                     when(
                         () => !watching.get(),
-                        () => Button({
-                            text: sync(() =>
-                                isWatching(data) ? "🔪" : "👁️",
-                                [watchings])
-                        }).$
+                        () => tree("span")
                             .class("right")
-                            .on.stop("click", () => toggleWatching(data))
+                            .append(
+                                sync(
+                                    () => isWatching(data) ? "🔪" : "👁️",
+                                    [watchings]
+                                )
+                            )
                         , [watching]
                     )
                 ),

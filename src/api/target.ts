@@ -5,7 +5,7 @@ import { wrapVariable } from "./variable";
 export function wrapTarget(scratchTarget: VM.Target) {
     const wrapper = wrap<WrappedTarget>({
         name: scratchTarget.getName(),
-        variables: Object.values(scratchTarget.variables).map(v => wrapVariable(v)),
+        variables: Object.values(scratchTarget.variables).map(wrapVariable),
         isStage: scratchTarget.isStage
     });
     scratchTarget.variables = new Proxy(scratchTarget.variables, {

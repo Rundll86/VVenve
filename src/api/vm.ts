@@ -8,12 +8,19 @@ export interface WrappedVM {
     targets: Wrapper<WrappedTarget>[];
 }
 export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
-    const cast = (targets: VM.Target[]): Wrapper<WrappedTarget>[] => targets.map(wrapTarget);
+    const cast = (scratchTargets: VM.Target[]) => {
+        const wrappedTargets = scratchTargets.map(wrapTarget)
+        wrapper.get().targets = wrappedTargets;
+        for (const wrappedTarget of wrappedTargets) {
+            wrappedTarget
+        }
+    };
     const wrapper = wrap<WrappedVM>({
-        targets: cast(scratchVM.runtime.targets)
+        targets: []
     });
+    cast(scratchVM.runtime.targets);
     const { hooks, patched } = patchArray(scratchVM.runtime, "targets");
     scratchVM.runtime = patched;
-    hooks.updated.subcribe(newTargets => wrapper.get().targets = cast(newTargets));
+    hooks.updated.subcribe(cast);
     return wrapper;
 }

@@ -1,6 +1,6 @@
 declare global {
     interface Window {
-        VVENVE: VM;
+        __VVENVE__: VM;
         injectVVenve: () => void;
     }
 }

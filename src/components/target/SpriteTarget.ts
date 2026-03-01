@@ -12,6 +12,11 @@ export default createComponent({
         data: {
             transform: typed<WrappedTarget>(),
             required: true
+        },
+        showing: {
+            transform: Boolean,
+            required: true,
+            uploadable: true
         }
     },
     styles: [
@@ -21,8 +26,7 @@ export default createComponent({
         styleSet(".sprite:hover")
             .backgroundColor("rgba(0,0,0,0.05)")
     ]
-}, ({ data }) => {
-    const showing = wrap(false);
+}, ({ data, showing }) => {
 
     return tree("div")
         .on("click", () => showing.set(!showing.get()))

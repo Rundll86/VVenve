@@ -17,4 +17,5 @@ const mill = async (time: number) => new Promise<void>(resolve => setTimeout(res
 
     const code = await fs.readFile("dist/index.js", "utf-8");
     await page.evaluate(code => window.injectVVenve = () => eval(code), code);
+    browser.on("disconnected", () => process.exit(0));
 })();

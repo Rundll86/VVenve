@@ -1,4 +1,4 @@
-import { $, createComponent, styleSet, sync, tree, when, wrap } from "nine";
+import { $, createComponent, styleSet, sync, tree, when, wrap, Wrapper } from "nine";
 import SubWindow from "../SubWindow";
 import Logo from "../Logo";
 import { isVMObtained, wrappedVM } from "../../state/vm";
@@ -15,6 +15,8 @@ export default createComponent({
             .maxWidth("50vw")
     ]
 }, () => {
+    const targetShowing: Record<string, Wrapper<boolean>> = {};
+
     return SubWindow({ x: wrap(100), y: wrap(100), showing: mainShowing }, {
         title: () => Logo(),
         content: () =>
@@ -29,7 +31,7 @@ export default createComponent({
                     when(
                         isVMObtained,
                         () =>
-                            Button({ text: "设置为VVENVE" }).$.on("click", () => window.VVENVE = vm!),
+                            Button({ text: "设置为__VVENVE__" }).$.on("click", () => window.__VVENVE__ = vm!),
                     ),
                     when(
                         isVMObtained,
@@ -39,7 +41,13 @@ export default createComponent({
                                 .append(
                                     Button({ text: "视奸变量" }).$.on("click", () => watcherShowing.set(true)),
                                     $(sync(
-                                        () => wrappedVM!.get().targets.map(t => SpriteTarget({ data: t })),
+                                        () => wrappedVM!.get().targets.map(t => {
+                                            if (!targetShowing[t.get().name]) targetShowing[t.get().name] = wrap(false);
+                                            return SpriteTarget({
+                                                data: t,
+                                                showing: targetShowing[t.get().name]
+                                            });
+                                        }),
                                         [wrappedVM]
                                     ))
                                 )
