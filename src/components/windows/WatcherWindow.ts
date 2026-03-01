@@ -1,8 +1,8 @@
 import { createComponent, styleSet, sync, tree, wrap } from "nine";
 import SubWindow from "../SubWindow";
-import { watchings } from "src/state/watch";
 import { watcherShowing } from "src/state/window";
 import VariableTarget from "../target/VariableTarget";
+import { wrappedVM } from "src/state/vm";
 
 export default createComponent({
     styles: [
@@ -11,8 +11,8 @@ export default createComponent({
             .flexDirection("column")
     ]
 }, () => {
-    return SubWindow({ x: wrap(100), y: wrap(100), title: "变量视奸器", showing: watcherShowing }, {
-        title: (title) => title,
+    return SubWindow({ x: wrap(100), y: wrap(100), showing: watcherShowing }, {
+        title: () => "变量视奸器",
         content: () =>
             tree("div")
                 .append(
@@ -20,9 +20,15 @@ export default createComponent({
                     tree("div")
                         .class("vars")
                         .append(
-                            sync(() =>
-                                watchings.get().map(v => VariableTarget({ data: v, watching: true }))
-                            , [watchings]
+                            sync(
+                                () =>
+                                    wrappedVM
+                                        ? wrappedVM.get().watchings.map(v => VariableTarget({
+                                            data: wrappedVM?.get().findVariable(v.target, v.name),
+                                            watching: true
+                                        }))
+                                        : null,
+                                [wrappedVM]
                             )
                         )
                 )

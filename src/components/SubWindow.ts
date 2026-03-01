@@ -1,6 +1,7 @@
 import { createComponent, defineSlot, defineTemplate, styleSet, tree, when } from "nine";
 import Draggable from "./Draggable";
 import Button from "./Button";
+import Logo from "./Logo";
 
 export default createComponent({
     props: {
@@ -15,9 +16,6 @@ export default createComponent({
             validate: Number.isInteger,
             required: true,
             uploadable: true
-        },
-        title: {
-            transform: String
         },
         showing: {
             transform: Boolean,
@@ -45,14 +43,16 @@ export default createComponent({
         styleSet(".content")
             .padding("20px")
             .maxHeight("80vh")
-            .overflow("auto")
+            .overflow("auto"),
+        styleSet(".close-button")
+            .marginLeft("auto")
     ],
     slots: [
         defineSlot("title", { template: defineTemplate<string>() }),
         defineSlot("content", { template: defineTemplate() })
     ],
     uuid: "SubWindow"
-}, ({ x, y, title, showing }, slots) => {
+}, ({ x, y, showing }, slots) => {
     return Draggable({ x, y }, {
         content: () =>
             tree("div").append(
@@ -63,8 +63,9 @@ export default createComponent({
                             tree("div")
                                 .class("title-bar")
                                 .append(
-                                    slots.title(title),
-                                    Button({ text: "🔴" }).$.on("click", () => showing.set(false))
+                                    Logo({}, { title: title => slots.title(title) }),
+                                    Button({ text: "🔴" }).$
+                                        .on("click", () => showing.set(false))
                                 )
                                 .data({ region: "true" }),
                             tree("div")

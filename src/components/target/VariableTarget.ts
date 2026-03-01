@@ -1,14 +1,13 @@
 import { createComponent, styleSet, sync, tree, typed, when } from "nine";
 import Label from "../Label";
-import { isWatching, removeWatching, toggleWatching, watchings } from "src/state/watch";
 import ValueInput from "../ValueInput";
 import { WrappedVariable } from "src/api/vm";
+import { wrappedVM } from "src/state/vm";
 
 export default createComponent({
     props: {
         data: {
             transform: typed<WrappedVariable>(),
-            required: true,
         },
         watching: {
             transform: Boolean,
@@ -48,7 +47,7 @@ export default createComponent({
         .append(
             tree("div")
                 .class("var")
-                .on.stop("click", () => toggleWatching(data.get()))
+                .on.stop("click", () => wrappedVM?.get().toggleWatch(data.get().target, data.get().name))
                 .append(
                     tree("span").class("indent"),
                     Label({ text: data.get().isList ? "列表" : "变量" }),
@@ -59,8 +58,8 @@ export default createComponent({
                             .class("right")
                             .append(
                                 sync(
-                                    () => isWatching(data.get()) ? "🔪" : "👁️",
-                                    [watchings]
+                                    () => wrappedVM?.get().isWatching(data.get().target, data.get().name) ? "🔪" : "👁️",
+                                    [wrappedVM]
                                 )
                             )
                         , [watching]
@@ -75,7 +74,7 @@ export default createComponent({
             )
         ).on("click", () => {
             if (watching.get()) {
-                removeWatching(data.get());
+                wrappedVM?.get().removeWatch(data.get().target, data.get().name);
             }
         });
 });

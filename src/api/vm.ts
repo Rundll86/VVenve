@@ -3,6 +3,12 @@ import { patchArray } from "src/state/patch/array";
 
 export interface WrappedVM {
     targets: WrappedTarget[];
+    watchings: VariableReference[];
+    addWatch(target: string, name: string): void;
+    toggleWatch(target: string, name: string): void;
+    removeWatch(target: string, name: string): void;
+    isWatching(target: string, name: string): boolean;
+    findVariable(target: string, name: string): WrappedVariable | null;
 }
 export interface WrappedTarget {
     name: string;
@@ -10,10 +16,15 @@ export interface WrappedTarget {
     isStage: boolean;
 }
 export type ScratchValue = VM.ScratchCompatibleValue | VM.ScratchList;
+export interface VariableReference {
+    target: string;
+    name: string;
+}
 export interface WrappedVariable {
     name: string;
     value: ScratchValue;
-    isList: boolean
+    isList: boolean;
+    target: string;
 }
 
 export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
@@ -25,7 +36,8 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
                     const wrappedVariable: WrappedVariable = {
                         name: scratchVariable.name,
                         value: scratchVariable.value,
-                        isList: scratchVariable.type === "list"
+                        isList: scratchVariable.type === "list",
+                        target: scratchTarget.getName(),
                     };
                     Object.defineProperty(scratchVariable, "value", {
                         configurable: true,
@@ -73,7 +85,30 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
         });
     };
     const wrappedVM = wrap<WrappedVM>({
-        targets: []
+        targets: [],
+        watchings: [],
+        addWatch(target, name) {
+            this.watchings.push({ target, name });
+            wrappedVM.updateOnly();
+        },
+        toggleWatch(target, name) {
+            if (this.isWatching(target, name)) {
+                this.removeWatch(target, name);
+            } else {
+                this.addWatch(target, name);
+            }
+            wrappedVM.updateOnly();
+        },
+        removeWatch(target, name) {
+            this.watchings = this.watchings.filter(e => e.target !== target || e.name !== name);
+            wrappedVM.updateOnly();
+        },
+        isWatching(target, name) {
+            return this.watchings.some(e => e.target === target && e.name === name);
+        },
+        findVariable(target, name) {
+            return this.targets.find(e => e.name === target)?.variables.find(e => e.name === name) || null;
+        },
     });
     cast(scratchVM.runtime.targets);
     const { hooks, patched } = patchArray(scratchVM.runtime, "targets");

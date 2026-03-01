@@ -1,4 +1,4 @@
-import { createComponent, styleSet, tree } from "nine";
+import { createComponent, defineSlot, defineTemplate, styleSet, tree } from "nine";
 import logo from "@asset/logo.svg";
 import title from "@asset/title.svg";
 
@@ -14,14 +14,17 @@ export default createComponent({
             .width("2px")
             .height("15px")
             .backgroundColor("orange")
-            .margin("0 2px")
+            .margin("0 4px")
+    ],
+    slots: [
+        defineSlot("title", { template: defineTemplate<string>() })
     ]
-}, () =>
+}, (_, slots) =>
     tree("div")
         .class("wrapper")
         .append(
             tree("img").class("logo").src(logo),
             tree("div").class("line"),
-            tree("img").class("logo").src(title)
+            slots.title(title)
         )
 );

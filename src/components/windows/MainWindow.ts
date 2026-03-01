@@ -1,6 +1,5 @@
 import { $, createComponent, styleSet, sync, tree, when, wrap, Wrapper } from "nine";
 import SubWindow from "../SubWindow";
-import Logo from "../Logo";
 import { isVMObtained, wrappedVM } from "../../state/vm";
 import vm from "$/vm";
 import Button from "../Button";
@@ -18,7 +17,7 @@ export default createComponent({
     const targetShowing: Record<string, Wrapper<boolean>> = {};
 
     return SubWindow({ x: wrap(100), y: wrap(100), showing: mainShowing }, {
-        title: () => Logo(),
+        title: (title) => tree("img").class("logo").src(title),
         content: () =>
             tree("div")
                 .append(
