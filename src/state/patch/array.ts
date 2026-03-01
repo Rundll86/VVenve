@@ -27,15 +27,19 @@ export function patchArray<O extends object, K extends keyof O, T = O[K]>(obj: O
         }) as O[K];
         state.patching = false;
     };
-    const patchedObj = new Proxy(obj, {
-        set(target, p, newValue, receiver) {
-            const result = Reflect.set(target, p, newValue, receiver);
-            if (p === key && !state.patching) {
+    let currentValue = obj[key];
+    const patchedObj = Object.defineProperty(obj, key, {
+        set(newValue) {
+            currentValue = newValue;
+            if (!state.patching) {
                 hooks.set.emit(newValue);
                 doPatch();
             }
-            return result;
         },
+        get() {
+            return currentValue;
+        },
+        configurable: true
     });
     doPatch();
     return { hooks, patched: patchedObj };

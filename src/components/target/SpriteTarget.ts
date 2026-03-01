@@ -28,7 +28,7 @@ export default createComponent({
         .on("click", () => showing.set(!showing.get()))
         .class("sprite")
         .append(
-            Label({ text: data.get().isStage ? "全局变量" : "角色" }),
+            Label({ text: data.get().isClone ? "克隆体" : data.get().isStage ? "全局变量" : "角色" }),
             tree("span")
                 .append(sync(() => `${data.get().isStage ? "舞台" : data.get().name} ${showing.get() ? "▣" : "▢"}`, [showing])),
             when(showing, () =>

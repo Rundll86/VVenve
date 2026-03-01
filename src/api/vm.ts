@@ -8,12 +8,14 @@ export interface WrappedVM {
     toggleWatch(target: string, name: string): void;
     removeWatch(target: string, name: string): void;
     isWatching(target: string, name: string): boolean;
+    findWatching(target: string, name: string): VariableReference | null;
     findVariable(target: string, name: string): WrappedVariable | null;
 }
 export interface WrappedTarget {
     name: string;
     variables: WrappedVariable[];
     isStage: boolean;
+    isClone: boolean;
 }
 export type ScratchValue = VM.ScratchCompatibleValue | VM.ScratchList;
 export interface VariableReference {
@@ -51,6 +53,10 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
                     Object.defineProperty(scratchVariable, "name", {
                         configurable: true,
                         set(newValue) {
+                            const oldVariable = wrappedVM.get().findWatching(wrappedVariable.target, wrappedVariable.name);
+                            if (oldVariable) {
+                                oldVariable.name = newValue;
+                            }
                             wrappedVariable.name = newValue;
                             wrappedVM.updateOnly();
                         },
@@ -60,7 +66,8 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
                     });
                     return wrappedVariable;
                 }),
-                isStage: scratchTarget.isStage
+                isStage: scratchTarget.isStage,
+                isClone: !scratchTarget.isOriginal
             };
             scratchTarget.variables = new Proxy(scratchTarget.variables, {
                 set(target, p, newValue, receiver) {
@@ -108,6 +115,9 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
         },
         findVariable(target, name) {
             return this.targets.find(e => e.name === target)?.variables.find(e => e.name === name) || null;
+        },
+        findWatching(target, name) {
+            return this.watchings.find(e => e.target === target && e.name === name) || null;
         },
     });
     cast(scratchVM.runtime.targets);

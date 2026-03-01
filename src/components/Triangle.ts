@@ -11,7 +11,7 @@ export default createComponent({
             .display("flex")
             .alignItems("center")
             .justifyContent("center")
-            .backgroundColor("rgb(176, 255, 221)")
+            .backgroundColor("rgba(255, 207, 174, 1)")
             .border("2px solid transparent")
             .transition("all .2s ease-out"),
         styleSet(".ball:hover")

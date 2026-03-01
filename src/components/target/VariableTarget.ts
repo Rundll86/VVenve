@@ -66,6 +66,10 @@ export default createComponent({
                 .append(
                     tree("span").class("indent"),
                     Label({ text: isAir.get() ? "？？？" : data.get()?.isList ? "列表" : "变量" }),
+                    when(
+                        watching,
+                        () => Label({ text: data.get()?.target })
+                    ),
                     tree("span").class("text").append(sync(() => isAir.get() ? "棍母" : data.get()?.name, [data])),
                     when(
                         () => !watching.get(),
@@ -76,8 +80,8 @@ export default createComponent({
                                     () => (isAir.get() ? "🚫" : "") + (wrappedVM?.get().isWatching(data.get()?.target, data.get()?.name) ? "🔪" : "👁️"),
                                     [wrappedVM]
                                 )
-                            )
-                        , [watching]
+                            ),
+                        [watching]
                     )
                 ),
             when(
