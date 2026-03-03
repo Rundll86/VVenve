@@ -2,7 +2,6 @@
     "name": "v-venve",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
     "scripts": {
         "test": "run-s build:tsc start",
         "start": "node dist/native/test",
