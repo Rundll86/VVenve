@@ -3,13 +3,21 @@ import { patchArray } from "src/state/patch/array";
 
 export interface WrappedVM {
     targets: WrappedTarget[];
+    findVariable(target: string, name: string): WrappedVariable | null;
+
     watchings: VariableReference[];
     addWatch(target: string, name: string): void;
     toggleWatch(target: string, name: string): void;
     removeWatch(target: string, name: string): void;
     isWatching(target: string, name: string): boolean;
     findWatching(target: string, name: string): VariableReference | null;
-    findVariable(target: string, name: string): WrappedVariable | null;
+
+    locks: VariableReference[];
+    addLock(target: string, name: string): void;
+    toggleLock(target: string, name: string): void;
+    removeLock(target: string, name: string): void;
+    isLocked(target: string, name: string): boolean;
+    findLock(target: string, name: string): VariableReference | null;
 }
 export interface WrappedTarget {
     name: string;
@@ -43,6 +51,7 @@ export function wrapVariable(
     Object.defineProperty(scratchVariable, "value", {
         configurable: true,
         set(newValue) {
+            if (vm.get().isLocked(wrappedVariable.target, wrappedVariable.name)) return;
             wrappedVariable.value.set(newValue);
         },
         get() {
@@ -99,6 +108,10 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
     };
     const wrappedVM = wrap<WrappedVM>({
         targets: [],
+        findVariable(target, name) {
+            return this.targets.find(e => e.name === target)?.variables.find(e => e.name === name) || null;
+        },
+
         watchings: [],
         addWatch(target, name) {
             this.watchings.push({ target, name });
@@ -119,11 +132,32 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
         isWatching(target, name) {
             return this.watchings.some(e => e.target === target && e.name === name);
         },
-        findVariable(target, name) {
-            return this.targets.find(e => e.name === target)?.variables.find(e => e.name === name) || null;
-        },
         findWatching(target, name) {
             return this.watchings.find(e => e.target === target && e.name === name) || null;
+        },
+
+        locks: [],
+        addLock(target, name) {
+            this.locks.push({ target, name });
+            wrappedVM.updateOnly();
+        },
+        toggleLock(target, name) {
+            if (this.isLocked(target, name)) {
+                this.removeLock(target, name);
+            } else {
+                this.addLock(target, name);
+            }
+            wrappedVM.updateOnly();
+        },
+        removeLock(target, name) {
+            this.locks = this.locks.filter(e => e.target !== target || e.name !== name);
+            wrappedVM.updateOnly();
+        },
+        isLocked(target, name) {
+            return this.locks.some(e => e.target === target && e.name === name);
+        },
+        findLock(target, name) {
+            return this.locks.find(e => e.target === target && e.name === name) || null;
         },
     });
     cast(scratchVM.runtime.targets);

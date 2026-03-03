@@ -60,8 +60,11 @@ export default createComponent({
                         alert(tip);
                         return;
                     }
-                    if (watching.get()) return;
-                    wrappedVM?.get().toggleWatch(data.get().target, data.get().name);
+                    if (watching.get()) {
+                        wrappedVM?.get().toggleLock(data.get().target, data.get().name);
+                    } else {
+                        wrappedVM?.get().toggleWatch(data.get().target, data.get().name);
+                    }
                 })
                 .append(
                     tree("span").class("indent"),
@@ -70,7 +73,7 @@ export default createComponent({
                         watching,
                         () => Label({ text: data.get()?.target })
                     ),
-                    tree("span").class("text").append(sync(() => isAir.get() ? "棍母" : data.get()?.name, [data])),
+                    tree("span").class("text").append(sync(() => (wrappedVM?.get().isLocked(data.get()?.target, data.get()?.name) ? "🔒" : "") + (isAir.get() ? "棍母" : data.get()?.name), [data])),
                     when(
                         () => !watching.get(),
                         () => tree("span")
