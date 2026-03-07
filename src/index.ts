@@ -4,11 +4,16 @@ import MainWindow from "./components/windows/MainWindow";
 import ProjectWindow from "./components/windows/ProjectWindow";
 import WatcherWindow from "./components/windows/WatcherWindow";
 import { wrap } from "./nine";
-
+document.querySelectorAll("#vvenv-dragger").forEach((e) => {
+    e.remove();
+});
 MainWindow().mount("body");
 WatcherWindow().mount("body");
 ProjectWindow().mount("body");
 
-Draggable({ x: wrap(100), y: wrap(100) }, {
-    content: () => Triangle()
-}).mount("body");
+Draggable(
+    { x: wrap(100), y: wrap(100) },
+    {
+        content: () => Triangle(),
+    },
+).mount("body");

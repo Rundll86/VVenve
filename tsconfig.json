@@ -1,45 +1,25 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true,
-        "declaration": true,
-        "outDir": "dist/native",
-        "typeRoots": [
-            "node_modules",
-            "node_modules/@types",
-            "src/nine/src/types"
-        ],
-        "types": [
-            "@turbowarp/types",
-            "module.d.ts",
-            "node"
-        ],
-        "paths": {
-            "nine": [
-                "src/nine"
-            ],
-            "$/*": [
-                "src/obtain/*"
-            ],
-            "@asset/*": [
-                "src/assets/*"
-            ],
-        },
-        "baseUrl": "."
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "outDir": "dist/native",
+    "typeRoots": ["node_modules", "node_modules/@types", "src/nine/src/types"],
+    "types": ["@turbowarp/types", "module.d.ts", "node"],
+    "paths": {
+      "nine": ["src/nine"],
+      "$/*": ["src/obtain/*"],
+      "@asset/*": ["src/assets/*"]
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "src/nine"
-    ]
+    "baseUrl": "."
+  },
+  "include": ["src/**/*", "test"],
+  "exclude": ["node_modules", "dist", "src/nine"]
 }
