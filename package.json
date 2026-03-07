@@ -1,7 +1,7 @@
 {
     "name": "v-venve",
     "version": "1.0.0",
-    "description": "",
+    "description": "VVenve 是一个开源的 CCW 安全审计工具。",
     "scripts": {
         "start": "node dist/index.js",
         "dev": "run-p dev:watch dev:run",
@@ -16,7 +16,14 @@
         "postinstall": "git submodule update && cd src/nine && pnpm install && pnpm build && cd ../../"
     },
     "keywords": [],
-    "author": "",
+    "author": [
+        {
+            "name": "陨落基围虾"
+        },
+        {
+            "name": "skydog221"
+        }
+    ],
     "license": "MIT",
     "packageManager": "pnpm@10.28.2",
     "devDependencies": {

@@ -1,14 +1,9 @@
-interface __VVENVE__ {
-    vm: VM;
-    injected: boolean;
-    ban(): string;
-    unban(key: string): boolean;
-}
+import { VVenveContext } from "src/api/context";
 
 declare global {
     interface Window {
-        __VVENVE__: __VVENVE__;
+        __VVENVE__: VVenveContext;
         injectVVenve: () => void;
     }
 }
-export {};
+export { };

@@ -20,14 +20,16 @@ import {
     watcherShowing,
 } from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
+import { VVenveContext } from "src/api/context";
+
 const getVVenve = () => {
     const _vm = vm as VM;
     let banKey: string | null = null;
-    const handler: ProxyHandler<Window["__VVENVE__"]> = {
+    const handler: ProxyHandler<VVenveContext> = {
         set(
-            target: Window["__VVENVE__"],
-            p: keyof Window["__VVENVE__"],
-            _value: Window["__VVENVE__"][keyof Window["__VVENVE__"]],
+            target: VVenveContext,
+            p: keyof VVenveContext,
+            _value: VVenveContext[keyof VVenveContext],
             _receiver: any,
         ) {
             if (!injectedState.get()) return true;
@@ -76,9 +78,10 @@ const getVVenve = () => {
         result.injected = true;
         return true;
     };
-    const result: Window["__VVENVE__"] = { vm: _vm, injected: true, ban, unban };
+    const result: VVenveContext = { vm: _vm, injected: true, ban, unban };
     return result;
 };
+
 export default createComponent(
     {
         styles: [
@@ -125,7 +128,7 @@ export default createComponent(
                                                     .targets.map((t) => {
                                                         if (
                                                             !targetShowing[
-                                                                t.name
+                                                            t.name
                                                             ]
                                                         )
                                                             targetShowing[
@@ -135,7 +138,7 @@ export default createComponent(
                                                             data: t,
                                                             showing:
                                                                 targetShowing[
-                                                                    t.name
+                                                                t.name
                                                                 ],
                                                         });
                                                     }),
