@@ -22,6 +22,7 @@ import {
 import SpriteTarget from "../target/SpriteTarget";
 const getVVenve = () => {
     const _vm = vm as VM;
+    let banKey: string | null = null;
     const handler: ProxyHandler<Window["__VVENVE__"]> = {
         set(
             target: Window["__VVENVE__"],
@@ -45,23 +46,38 @@ const getVVenve = () => {
             return true;
         },
     };
+    let sealed = false;
     const ban = () => {
+        if (banKey !== null) return "";
+        banKey = crypto.randomUUID();
         injectedState.set(false);
-        window.__VVENVE__.injected = false;
+        result.injected = false;
         mainShowing.set(false);
         watcherShowing.set(false);
         projectShowing.set(false);
-        window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
-        try {
-            Object.defineProperty(window, "__VVENVE__", {
-                configurable: false,
-                writable: false,
-            });
-        } catch (_) {
-            console.error(_);
+        if (!sealed) {
+            window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
+            try {
+                Object.defineProperty(window, "__VVENVE__", {
+                    configurable: false,
+                    writable: false,
+                });
+            } catch (_) {
+                console.error(_);
+            }
+            sealed = true;
         }
+        return banKey;
     };
-    return { vm: _vm, injected: true, ban };
+    const unban = (key: string) => {
+        if (banKey === null || key !== banKey) return false;
+        banKey = null;
+        injectedState.set(true);
+        result.injected = true;
+        return true;
+    };
+    const result: Window["__VVENVE__"] = { vm: _vm, injected: true, ban, unban };
+    return result;
 };
 export default createComponent(
     {

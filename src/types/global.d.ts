@@ -1,7 +1,8 @@
 interface __VVENVE__ {
     vm: VM;
     injected: boolean;
-    ban(): void;
+    ban(): string;
+    unban(key: string): boolean;
 }
 
 declare global {
