@@ -5,7 +5,6 @@ import {
     tree,
     typed,
     when,
-    Wrapper,
 } from "nine";
 import Label from "../Label";
 import ValueShow from "../ValueShow";
@@ -98,11 +97,11 @@ export default createComponent(
                                         sync(
                                             () =>
                                                 (isAir.get() ? "🚫" : "") +
-                        (wrappedVM
-                            ?.get()
-                            .isWatching(data.get()?.target, data.get()?.name)
-                            ? "🔪"
-                            : "👁️"),
+                                                (wrappedVM
+                                                    ?.get()
+                                                    .isWatching(data.get()?.target, data.get()?.name)
+                                                    ? "🔪"
+                                                    : "👁️"),
                                             [wrappedVM],
                                         ),
                                     ),
@@ -115,7 +114,7 @@ export default createComponent(
                     const locked = sync(
                         () =>
                             wrappedVM?.get().isLocked(data.get()?.target, data.get()?.name) ??
-              false,
+                            false,
                         [wrappedVM, data],
                     );
                     const isList = sync(() => data.get()?.isList ?? false, [data]);

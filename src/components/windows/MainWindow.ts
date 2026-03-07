@@ -14,73 +14,12 @@ import vm from "$/vm";
 import Button from "../Button";
 import {
     guardWindows,
-    injectedState,
     mainShowing,
     projectShowing,
     watcherShowing,
 } from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
-import { VVenveContext } from "src/api/context";
-
-const getVVenve = () => {
-    const _vm = vm as VM;
-    let banKey: string | null = null;
-    const handler: ProxyHandler<VVenveContext> = {
-        set(
-            target: VVenveContext,
-            p: keyof VVenveContext,
-            _value: VVenveContext[keyof VVenveContext],
-            _receiver: any,
-        ) {
-            if (!injectedState.get()) return true;
-            if (p === "injected") return true;
-            return Reflect.set(target, p, _value, _receiver);
-        },
-        defineProperty(_target, _p, _descriptor) {
-            if (!injectedState.get()) return true;
-            return Reflect.defineProperty(_target, _p, _descriptor);
-        },
-        setPrototypeOf(_target, _proto) {
-            if (!injectedState.get()) return true;
-            return Reflect.setPrototypeOf(_target, _proto);
-        },
-        deleteProperty(_target, _p) {
-            return true;
-        },
-    };
-    let sealed = false;
-    const ban = () => {
-        if (banKey !== null) return "";
-        banKey = crypto.randomUUID();
-        injectedState.set(false);
-        result.injected = false;
-        mainShowing.set(false);
-        watcherShowing.set(false);
-        projectShowing.set(false);
-        if (!sealed) {
-            window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
-            try {
-                Object.defineProperty(window, "__VVENVE__", {
-                    configurable: false,
-                    writable: false,
-                });
-            } catch (_) {
-                console.error(_);
-            }
-            sealed = true;
-        }
-        return banKey;
-    };
-    const unban = (key: string) => {
-        if (banKey === null || key !== banKey) return false;
-        banKey = null;
-        injectedState.set(true);
-        result.injected = true;
-        return true;
-    };
-    const result: VVenveContext = { vm: _vm, injected: true, ban, unban };
-    return result;
-};
+import { getContext } from "src/api/context";
 
 export default createComponent(
     {
@@ -93,7 +32,7 @@ export default createComponent(
     },
     () => {
         const targetShowing: Record<string, Wrapper<boolean>> = {};
-        window.__VVENVE__ = getVVenve();
+        window.__VVENVE__ = getContext(vm!);
         guardWindows();
         return SubWindow(
             { x: wrap(100), y: wrap(100), showing: mainShowing },
@@ -128,7 +67,7 @@ export default createComponent(
                                                     .targets.map((t) => {
                                                         if (
                                                             !targetShowing[
-                                                            t.name
+                                                                t.name
                                                             ]
                                                         )
                                                             targetShowing[
@@ -138,7 +77,7 @@ export default createComponent(
                                                             data: t,
                                                             showing:
                                                                 targetShowing[
-                                                                t.name
+                                                                    t.name
                                                                 ],
                                                         });
                                                     }),

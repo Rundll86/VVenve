@@ -1,6 +1,67 @@
+import { injectedState, mainShowing, projectShowing, watcherShowing } from "src/state/window";
+
 export interface VVenveContext {
     vm: VM;
     injected: boolean;
     ban(): string;
     unban(key: string): boolean;
 }
+
+export function getContext(vm: VM) {
+    let banKey: string | null = null;
+    const handler: ProxyHandler<VVenveContext> = {
+        set(
+            target: VVenveContext,
+            p: keyof VVenveContext,
+            value: VVenveContext[keyof VVenveContext],
+            receiver: unknown,
+        ) {
+            if (!injectedState.get()) return true;
+            if (p === "injected") return true;
+            return Reflect.set(target, p, value, receiver);
+        },
+        defineProperty(target, p, descriptor) {
+            if (!injectedState.get()) return true;
+            return Reflect.defineProperty(target, p, descriptor);
+        },
+        setPrototypeOf(target, proto) {
+            if (!injectedState.get()) return true;
+            return Reflect.setPrototypeOf(target, proto);
+        },
+        deleteProperty() {
+            return true;
+        },
+    };
+    let sealed = false;
+    const ban = () => {
+        if (banKey !== null) return "";
+        banKey = crypto.randomUUID();
+        injectedState.set(false);
+        result.injected = false;
+        mainShowing.set(false);
+        watcherShowing.set(false);
+        projectShowing.set(false);
+        if (!sealed) {
+            window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
+            try {
+                Object.defineProperty(window, "__VVENVE__", {
+                    configurable: false,
+                    writable: false,
+                });
+            } catch (_) {
+                console.error(_);
+            }
+            sealed = true;
+        }
+        return banKey;
+    };
+    const unban = (key: string) => {
+        if (banKey === null || key !== banKey) return false;
+        banKey = null;
+        injectedState.set(true);
+        result.injected = true;
+        return true;
+    };
+    const result: VVenveContext = { vm, injected: true, ban, unban };
+    return result;
+};

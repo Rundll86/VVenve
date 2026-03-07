@@ -71,7 +71,7 @@ export default createComponent(
         const getCurrentValue = () => {
             if (
                 valueRef &&
-        typeof (valueRef as Wrapper<ScratchValue>).get === "function"
+                typeof (valueRef as Wrapper<ScratchValue>).get === "function"
             ) {
                 return (valueRef as Wrapper<ScratchValue>).get();
             }
@@ -86,7 +86,7 @@ export default createComponent(
         const getLockedValue = () => {
             if (
                 lockedRef &&
-        typeof (lockedRef as Wrapper<boolean>).get === "function"
+                typeof (lockedRef as Wrapper<boolean>).get === "function"
             ) {
                 return (lockedRef as Wrapper<boolean>).get();
             }
@@ -95,7 +95,7 @@ export default createComponent(
         const getIsListValue = () => {
             if (
                 isListRef &&
-        typeof (isListRef as Wrapper<boolean>).get === "function"
+                typeof (isListRef as Wrapper<boolean>).get === "function"
             ) {
                 return (isListRef as Wrapper<boolean>).get();
             }
@@ -103,23 +103,23 @@ export default createComponent(
         };
 
         return (
-        // tree("input")
+            // tree("input")
             tree("button")
                 .class("txt")
-            // .type("text")
+                // .type("text")
                 .value(display)
-            //.disabled(sync(() => getLockedValue(), [lockedRef]))
-            // .on("input", (event) => {
-            //     if (getLockedValue()) return;
-            //     if (!valueRef) return;
-            //     const currentTarget = target.get();
-            //     const currentName = name.get();
-            //     if (!currentTarget || !currentName) return;
-            //     const raw = (event.target as HTMLInputElement).value;
-            //     const parsed = parseInput(raw, getCurrentValue(), getIsListValue());
-            //     wrappedVM?.get().setVariable(currentTarget, currentName, parsed);
-            // });
-                .on("click", (e) => {
+                //.disabled(sync(() => getLockedValue(), [lockedRef]))
+                // .on("input", (event) => {
+                //     if (getLockedValue()) return;
+                //     if (!valueRef) return;
+                //     const currentTarget = target.get();
+                //     const currentName = name.get();
+                //     if (!currentTarget || !currentName) return;
+                //     const raw = (event.target as HTMLInputElement).value;
+                //     const parsed = parseInput(raw, getCurrentValue(), getIsListValue());
+                //     wrappedVM?.get().setVariable(currentTarget, currentName, parsed);
+                // });
+                .on("click", () => {
                     console.log("FUCK BUG", valueRef);
                     const v = prompt("请输入修改后的值");
                     if (v === null) return;
