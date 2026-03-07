@@ -1,19 +1,14 @@
 {
-    "name": "v-venve",
+    "name": "scratch-obtain",
     "version": "1.0.0",
-    "description": "VVenve 是一个开源的 CCW 安全审计工具。",
+    "main": "dist/index.js",
+    "description": "使用各种稀奇古怪的方式抓取页面中的 Scratch 上下文。",
     "scripts": {
-        "start": "node dist/index.js",
-        "dev": "run-p dev:watch dev:run",
-        "dev:watch": "tsup --watch --env.NODE_ENV development",
-        "dev:run": "tsc test/index.ts && node test/index.js",
-        "dev:tsc": "tsc --watch",
+        "dev": "tsup --watch --env.NODE_ENV development",
         "build": "tsup --env.NODE_ENV production",
-        "build:tsc": "tsc",
         "lint": "run-s lint:*",
         "lint:es": "eslint . --fix",
-        "lint:type": "tsc --noEmit",
-        "postinstall": "git submodule update && cd src/nine && pnpm install && pnpm build && cd ../../"
+        "lint:type": "tsc --noEmit"
     },
     "keywords": [],
     "author": "陨落基围虾",
@@ -27,7 +22,6 @@
         "globals": "^17.3.0",
         "jiti": "^2.6.1",
         "npm-run-all": "^4.1.5",
-        "playwright": "^1.58.2",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1"

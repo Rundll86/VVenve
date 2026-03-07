@@ -1,9 +1,9 @@
 import { createComponent, styleSet, tree, wrap } from "nine";
 import SubWindow from "../SubWindow";
 import { projectShowing } from "src/state/window";
-import vm from "$/vm";
 import { download } from "src/util/data";
 import Button from "../Button";
+import { vm } from "src/state/vm";
 
 export default createComponent({}, () => {
     return SubWindow({ x: wrap(100), y: wrap(100), showing: projectShowing }, {

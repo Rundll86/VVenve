@@ -10,38 +10,21 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "declaration": true,
-        "outDir": "dist/native",
+        "outDir": "dist",
         "typeRoots": [
             "node_modules",
             "node_modules/@types",
-            "src/nine/src/types"
         ],
         "types": [
             "@turbowarp/types",
-            "module.d.ts",
-            "node"
         ],
-        "paths": {
-            "nine": [
-                "src/nine"
-            ],
-            "scratch-obtain": [
-                "src/obtain"
-            ],
-            "@asset/*": [
-                "src/assets/*"
-            ]
-        },
         "baseUrl": "."
     },
     "include": [
         "src/**/*",
-        "test"
     ],
     "exclude": [
         "node_modules",
         "dist",
-        "src/nine",
-        "src/obtain"
     ]
 }

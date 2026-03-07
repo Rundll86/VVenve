@@ -9,8 +9,7 @@ import {
     Wrapper,
 } from "nine";
 import SubWindow from "../SubWindow";
-import { isVMObtained, wrappedVM } from "../../state/vm";
-import vm from "$/vm";
+import { isVMObtained, vm, wrappedVM } from "../../state/vm";
 import Button from "../Button";
 import {
     guardWindows,
