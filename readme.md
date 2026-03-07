@@ -39,22 +39,51 @@ VVenve 是一个**通用的** Scratch 平台安全审计工具，提供实时变
 ## 安装
 
 ```bash
-# 克隆项目
-git clone https://github.com/your-username/v-venve.git
+# 克隆项目（包含子模块）
+git clone --recurse-submodules https://github.com/your-username/v-venve.git
 
 # 安装依赖
 pnpm install
+
+# 安装 nine-9 子模块依赖
+cd src/nine
+pnpm install
+cd ../..
 ```
 
 ## 使用方法
 
 ### 开发模式
 
+需要同时在两个目录运行开发服务器：
+
+1. 首先在 nine-9 子模块目录启动开发模式：
+
 ```bash
+cd src/nine
+pnpm dev
+```
+
+1. 然后在根目录启动 VVenve 开发模式：
+
+```bash
+# 在另一个终端执行
 pnpm dev
 ```
 
 ### 构建
+
+需要按顺序构建：
+
+1. 首先构建 nine-9 子模块：
+
+```bash
+cd src/nine
+pnpm build
+cd ../..
+```
+
+1. 然后构建 VVenve：
 
 ```bash
 pnpm build
