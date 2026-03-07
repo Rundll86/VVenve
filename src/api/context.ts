@@ -7,8 +7,10 @@ export interface VVenveContext {
     unban(key: string): boolean;
 }
 
-export function getContext(vm: VM) {
+export function createContext(vm: VM) {
     let banKey: string | null = null;
+    let sealed = false;
+
     const handler: ProxyHandler<VVenveContext> = {
         set(
             target: VVenveContext,
@@ -32,12 +34,11 @@ export function getContext(vm: VM) {
             return true;
         },
     };
-    let sealed = false;
     const ban = () => {
         if (banKey !== null) return "";
         banKey = crypto.randomUUID();
         injectedState.set(false);
-        result.injected = false;
+        context.injected = false;
         mainShowing.set(false);
         watcherShowing.set(false);
         projectShowing.set(false);
@@ -59,9 +60,10 @@ export function getContext(vm: VM) {
         if (banKey === null || key !== banKey) return false;
         banKey = null;
         injectedState.set(true);
-        result.injected = true;
+        context.injected = true;
         return true;
     };
-    const result: VVenveContext = { vm, injected: true, ban, unban };
-    return result;
-};
+
+    const context: VVenveContext = { vm, injected: true, ban, unban };
+    return context;
+}

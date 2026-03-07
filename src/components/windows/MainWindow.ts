@@ -19,7 +19,7 @@ import {
     watcherShowing,
 } from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
-import { getContext } from "src/api/context";
+import { createContext } from "src/api/context";
 
 export default createComponent(
     {
@@ -32,7 +32,7 @@ export default createComponent(
     },
     () => {
         const targetShowing: Record<string, Wrapper<boolean>> = {};
-        window.__VVENVE__ = getContext(vm!);
+        window.__VVENVE__ = createContext(vm!);
         guardWindows();
         return SubWindow(
             { x: wrap(100), y: wrap(100), showing: mainShowing },
