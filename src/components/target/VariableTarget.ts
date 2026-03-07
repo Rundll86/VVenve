@@ -119,7 +119,7 @@ export default createComponent(
             [wrappedVM, data],
           );
           const isList = sync(() => data.get()?.isList ?? false, [data]);
-
+          console.log("value", data.get()?.value.get());
           return tree("div")
             .class("watcher")
             .append(
