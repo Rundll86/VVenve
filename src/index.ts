@@ -4,9 +4,11 @@ import MainWindow from "./components/windows/MainWindow";
 import ProjectWindow from "./components/windows/ProjectWindow";
 import WatcherWindow from "./components/windows/WatcherWindow";
 import { wrap } from "./nine";
-document.querySelectorAll("#vvenv-dragger").forEach((e) => {
+document.querySelectorAll("#vvenve-dragger").forEach((e) => {
     e.remove();
 });
+Reflect.deleteProperty(window, "__VVENVE__");
+
 MainWindow().mount("body");
 WatcherWindow().mount("body");
 ProjectWindow().mount("body");

@@ -29,7 +29,7 @@ export default createComponent(
         styles: [
             styleSet(".dragger")
                 .userSelect("none")
-                .zIndex("9999")
+                .zIndex("2147483647")
                 .position("fixed"),
             styleSet(".dragger [data-region]:hover").cursor("move"),
         ],
@@ -51,7 +51,7 @@ export default createComponent(
         use(mouseOffsetX, mouseOffsetY);
         return tree("div")
             .class("dragger")
-            .id("vvenv-dragger")
+            .id("vvenve-dragger")
             .use(
                 sync(
                     () => styleSet().left(`${x.get()}px`).top(`${y.get()}px`),

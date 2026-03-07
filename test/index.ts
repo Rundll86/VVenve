@@ -41,10 +41,13 @@ const readBundle = async () => fs.readFile(bundlePath, "utf-8");
         if (reloadTimer) {
             clearTimeout(reloadTimer);
         }
-        reloadTimer = setTimeout(() => {
-            inject().catch((error) =>
-                console.error("[hot-reload] inject failed", error),
-            );
+        reloadTimer = setTimeout(async () => {
+            try {
+                await page.reload({ waitUntil: "domcontentloaded" });
+                await inject();
+            } catch (error) {
+                console.error("[hot-reload] reload+inject failed", error);
+            }
         }, 80);
     });
 

@@ -12,9 +12,57 @@ import SubWindow from "../SubWindow";
 import { isVMObtained, wrappedVM } from "../../state/vm";
 import vm from "$/vm";
 import Button from "../Button";
-import { mainShowing, projectShowing, watcherShowing } from "src/state/window";
+import {
+    guardWindows,
+    injectedState,
+    mainShowing,
+    projectShowing,
+    watcherShowing,
+} from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
-
+const getVVenve = () => {
+    const _vm = vm as VM;
+    const handler: ProxyHandler<Window["__VVENVE__"]> = {
+        set(
+            target: Window["__VVENVE__"],
+            p: keyof Window["__VVENVE__"],
+            _value: Window["__VVENVE__"][keyof Window["__VVENVE__"]],
+            _receiver: any,
+        ) {
+            if (!injectedState.get()) return true;
+            if (p === "injected") return true;
+            return Reflect.set(target, p, _value, _receiver);
+        },
+        defineProperty(_target, _p, _descriptor) {
+            if (!injectedState.get()) return true;
+            return Reflect.defineProperty(_target, _p, _descriptor);
+        },
+        setPrototypeOf(_target, _proto) {
+            if (!injectedState.get()) return true;
+            return Reflect.setPrototypeOf(_target, _proto);
+        },
+        deleteProperty(_target, _p) {
+            return true;
+        },
+    };
+    const ban = () => {
+        injectedState.set(false);
+        window.__VVENVE__.injected = false;
+        mainShowing.set(false);
+        watcherShowing.set(false);
+        projectShowing.set(false);
+        window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
+        try {
+            Object.defineProperty(window, "__VVENVE__", {
+                configurable: false,
+                writable: false,
+            });
+        } catch (_) {
+            console.error(_);
+        }
+    };
+    return { vm: _vm, injected: true, ban };
+};
 export default createComponent(
     {
         styles: [
@@ -26,7 +74,8 @@ export default createComponent(
     },
     () => {
         const targetShowing: Record<string, Wrapper<boolean>> = {};
-
+        window.__VVENVE__ = getVVenve();
+        guardWindows();
         return SubWindow(
             { x: wrap(100), y: wrap(100), showing: mainShowing },
             {
@@ -41,12 +90,6 @@ export default createComponent(
                             ),
                         ),
                         when(isVMObtained, () =>
-                            Button({ text: "设置为__VVENVE__" }).$.on(
-                                "click",
-                                () => (window.__VVENVE__ = vm!),
-                            ),
-                        ),
-                        when(isVMObtained, () =>
                             tree("div")
                                 .class("sprites")
                                 .append(
@@ -54,7 +97,7 @@ export default createComponent(
                                         "click",
                                         () => projectShowing.set(true),
                                     ),
-                                    Button({ text: "视奸变量1111" }).$.on(
+                                    Button({ text: "视奸变量" }).$.on(
                                         "click",
                                         () => watcherShowing.set(true),
                                     ),
