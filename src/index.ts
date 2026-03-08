@@ -4,6 +4,7 @@ import MainWindow from "./components/windows/MainWindow";
 import ProjectWindow from "./components/windows/ProjectWindow";
 import WatcherWindow from "./components/windows/WatcherWindow";
 import { wrap } from "./nine";
+
 document.querySelectorAll("#vvenve-dragger").forEach((e) => {
     e.remove();
 });

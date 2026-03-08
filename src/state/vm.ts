@@ -1,9 +1,9 @@
-import { vm as obtainVM } from "scratch-obtain";
+import { vm as obtainVM, ObtainVMMethod } from "scratch-obtain";
 import { WrappedVM, wrapVM } from "src/api/vm";
 import { wrap, Wrapper } from "nine";
 
 export let vm: VM | null = null;
-obtainVM(["Eureka", "ReactDom", "Trap"]).then(v => {
+obtainVM([OBTAINER]).then(v => {
     vm = v;
     isVMObtained.set(!!vm);
     if (vm) wrappedVM = wrapVM(vm);
