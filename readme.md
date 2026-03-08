@@ -47,7 +47,7 @@ VVenve 是一个**通用的** Scratch 平台安全审计工具。
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-username/v-venve.git
+git clone https://github.com/Rundll86/v-venve.git
 
 # 安装依赖
 pnpm install
