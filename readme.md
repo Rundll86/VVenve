@@ -76,6 +76,12 @@ pnpm install
 3. 然后在根目录启动 VVenve 开发模式：
 
     ```bash
+    pnpm dev:watch
+    ```
+
+4. 亦或者，使用带有 HMR 的 Playwright 服务器：
+
+    ```bash
     pnpm dev
     ```
 
