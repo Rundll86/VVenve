@@ -22,6 +22,11 @@ export default defineConfig(async options => {
         dts: false,
         clean: true,
         minify: !isDevelopment,
+        esbuildOptions(options) {
+            if (!isDevelopment) {
+                options.drop = ["console"];
+            }
+        },
         loader: {
             ".svg": "dataurl"
         },
