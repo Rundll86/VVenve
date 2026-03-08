@@ -3,4 +3,4 @@
 	url = https://github.com/Rundll86/nine.git
 [submodule "src/scratch-obtain"]
 	path = src/scratch-obtain
-	url = https://github.com/Rundll86/scratch-obtain
+	url = https://github.com/Rundll86/scratch-obtain.git
