@@ -13,7 +13,7 @@
         "lint": "run-s lint:*",
         "lint:es": "eslint . --fix",
         "lint:type": "tsc --noEmit",
-        "postinstall": "git submodule update && cd src/nine && pnpm install && pnpm build && cd ../../"
+        "postinstall": "git submodule update --init && cd src/nine && pnpm install && pnpm build && cd ../scratch-obtain && pnpm install && pnpm build"
     },
     "keywords": [],
     "author": "陨落基围虾",
