@@ -6,7 +6,7 @@ import * as path from "path";
 const mill = async (time: number) =>
     new Promise<void>((resolve) => setTimeout(resolve, time));
 const targetUrl = "https://ccw.site/gandi";
-const bundlePath = path.resolve(process.cwd(), "dist/index.js");
+const bundlePath = path.resolve(process.cwd(), "dist/VVenve-ReactDom.dist.js");
 
 const readBundle = async () => fs.readFile(bundlePath, "utf-8");
 
