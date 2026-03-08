@@ -30,27 +30,27 @@ VVenve 是一个**通用的** Scratch 平台安全审计工具。
 
 - 访问 Scratch VM 实例
 - 打印 VM 到控制台进行调试
-- 将 VM 暴露到全局变量 `__VVENVE__`
+
+### 💎 数据安全
+
+- 提供接口供作品获取玩家是否使用了VVenve
+- 作品可自定义是否要 **启/禁用** VVenve的使用
 
 ## 技术栈
 
 - **nine-9** - 轻量级响应式 UI 框架
 - **TypeScript** - 类型安全
 - **Scratch VM** - Scratch 虚拟机 API
+- **Scratch Obtain** - 获取 ScratchVM
 
 ## 安装
 
 ```bash
-# 克隆项目（包含子模块）
-git clone --recurse-submodules https://github.com/your-username/v-venve.git
+# 克隆项目
+git clone https://github.com/your-username/v-venve.git
 
 # 安装依赖
 pnpm install
-
-# 安装 nine-9 子模块依赖
-cd src/nine
-pnpm install
-cd ../..
 ```
 
 ## 使用方法
@@ -61,17 +61,23 @@ cd ../..
 
 1. 首先在 nine-9 子模块目录启动开发模式：
 
-```bash
-cd src/nine
-pnpm dev
-```
+    ```bash
+    cd src/nine
+    pnpm dev
+    ```
 
-1. 然后在根目录启动 VVenve 开发模式：
+2. 然后在 scratch-obtain 子模块目录启动开发模式
 
-```bash
-# 在另一个终端执行
-pnpm dev
-```
+    ```bash
+    cd src/scratch-obtain
+    pnpm dev
+    ```
+
+3. 然后在根目录启动 VVenve 开发模式：
+
+    ```bash
+    pnpm dev
+    ```
 
 ### 构建
 
@@ -79,17 +85,25 @@ pnpm dev
 
 1. 首先构建 nine-9 子模块：
 
-```bash
-cd src/nine
-pnpm build
-cd ../..
-```
+    ```bash
+    cd src/nine
+    pnpm build
+    cd ../..
+    ```
 
-1. 然后构建 VVenve：
+2. 然后构建 scratch-obtain 子模块：
 
-```bash
-pnpm build
-```
+    ```bash
+    cd src/scratch-obtain
+    pnpm build
+    cd ../..
+    ```
+
+3. 然后构建 VVenve：
+
+    ```bash
+    pnpm build
+    ```
 
 ### 类型检查
 
@@ -109,6 +123,7 @@ pnpm lint:es
 src/
 ├── api/
 │   └── vm.ts              # Scratch VM 封装和 API
+│   └── context.ts         # 注入上下文 API
 ├── components/
 │   ├── windows/           # 窗口组件
 │   │   ├── MainWindow.ts      # 主窗口
@@ -122,6 +137,7 @@ src/
 │   ├── vm.ts              # VM 状态管理
 │   └── window.ts          # 窗口状态管理
 ├── nine/                  # nine-9 框架源码
+├── scratch-obtain/        # scratch-obtain 库源码
 └── index.ts               # 入口文件
 ```
 
@@ -144,9 +160,8 @@ src/
 
 ### 开发者调试
 
-1. 点击"打印到控制台"查看 VM 实例
-2. 点击 `设置为 __VVENVE__` 将 VM 暴露到全局变量
-3. 在浏览器控制台中使用 `window.__VVENVE__` 访问 VM
+1. 点击 `打印到控制台` 查看 VM 实例
+2. 通过 `window.__VVENVE__` 获取注入上下文
 
 ## nine-9 框架
 
@@ -161,6 +176,15 @@ src/
 - React Hooks 风格的 API
 
 更多详情请查看 [nine-9 文档](src/nine/README.md)
+
+## scratch-obtain 库
+
+本项目集成了 scratch-obtain 运行时库，通过各种稀奇古怪的方式获取 VM 实例。
+
+###
+
+- 配置不同获取 VM 的方式
+- 通过优先级指定适合项目的方式获取VM
 
 ## 依赖项
 
@@ -180,6 +204,7 @@ MIT License
 - [Scratch](https://scratch.mit.edu/) - 创意编程平台
 - [TurboWarp](https://turbowarp.org/) - 改进的 Scratch 编辑器
 - nine-9 框架 - 响应式 UI 框架
+- scratch-obtain - 获取 ScratchVM
 
 ---
 
