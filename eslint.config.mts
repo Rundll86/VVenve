@@ -11,7 +11,8 @@ export default defineConfig([
             "**/node_modules/**",
             "**/dist/**",
             "src/nine/**",
-            "src/obtain/**"
+            "src/obtain/**",
+            "**/*.js"
         ]
     },
     {
@@ -19,6 +20,12 @@ export default defineConfig([
             quotes: ["error", "double"],
             indent: ["error", 4],
             semi: ["error", "always"],
+        }
+    },
+    {
+        files: ["test/*.ts"],
+        languageOptions: {
+            globals: globals.node
         }
     }
 ]);

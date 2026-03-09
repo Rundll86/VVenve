@@ -1,4 +1,4 @@
-import { vm as obtainVM, ObtainVMMethod } from "scratch-obtain";
+import { vm as obtainVM } from "scratch-obtain";
 import { WrappedVM, wrapVM } from "src/api/vm";
 import { wrap, Wrapper } from "nine";
 
