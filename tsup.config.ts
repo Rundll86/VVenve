@@ -2,7 +2,7 @@ import { defineConfig, Options } from "tsup";
 import fs from "fs/promises";
 import { version } from "./package.json";
 
-const bannerTemplate = await fs.readFile("banner.js", "utf8");
+const bannerTemplate = await fs.readFile("banner.ts", "utf8");
 const logo = await fs.readFile("src/assets/logo.svg", "utf8");
 const obtainers = {
     Eureka: "document-start",
@@ -15,13 +15,18 @@ export default defineConfig(async options => {
 
     return Object.entries(obtainers).map(([obtainer, runAt]) => ({
         entry: {
-            [`VVenve-${obtainer}.dist`]: "src/index.ts"
+            [`VVenve-${obtainer.toLowerCase()}.dist`]: "src/index.ts"
         },
         splitting: false,
         sourcemap: isDevelopment,
         dts: false,
         clean: true,
         minify: !isDevelopment,
+        esbuildOptions(options) {
+            if (!isDevelopment) {
+                options.drop = ["console"];
+            }
+        },
         loader: {
             ".svg": "dataurl"
         },
