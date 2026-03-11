@@ -1,21 +1,28 @@
 import { injectedState, mainShowing, projectShowing, watcherShowing } from "src/state/window";
+import { VariableReference } from "./vm";
 
-export interface VVenveContext {
+export interface PrivateContext {
     vm: VM;
     injected: boolean;
     ban(): string;
     unban(key: string): boolean;
 }
+export interface PublicContext {
+    variables: {
+        reference: VariableReference;
+        description: string;
+    }[];
+}
 
-export function createContext(vm: VM) {
+export function createPrivateContext(vm: VM) {
     let banKey: string | null = null;
     let sealed = false;
 
-    const handler: ProxyHandler<VVenveContext> = {
+    const handler: ProxyHandler<PrivateContext> = {
         set(
-            target: VVenveContext,
-            p: keyof VVenveContext,
-            value: VVenveContext[keyof VVenveContext],
+            target: PrivateContext,
+            p: keyof PrivateContext,
+            value: PrivateContext[keyof PrivateContext],
             receiver: unknown,
         ) {
             if (!injectedState.get()) return true;
@@ -64,6 +71,11 @@ export function createContext(vm: VM) {
         return true;
     };
 
-    const context: VVenveContext = { vm, injected: true, ban, unban };
+    const context: PrivateContext = { vm, injected: true, ban, unban };
     return context;
+}
+export function createPublicContext(): PublicContext {
+    return {
+        variables: []
+    };
 }

@@ -2,39 +2,39 @@ import { wrap, Wrapper } from "nine";
 import { patchArray } from "src/state/patch/array";
 
 export interface WrappedVM {
-  targets: WrappedTarget[];
-  findVariable(target: string, name: string): WrappedVariable | null;
+    targets: WrappedTarget[];
+    findVariable(target: string, name: string): WrappedVariable | null;
 
-  watchings: VariableReference[];
-  addWatch(target: string, name: string): void;
-  toggleWatch(target: string, name: string): void;
-  removeWatch(target: string, name: string): void;
-  isWatching(target: string, name: string): boolean;
-  findWatching(target: string, name: string): VariableReference | null;
+    watchings: VariableReference[];
+    addWatch(target: string, name: string): void;
+    toggleWatch(target: string, name: string): void;
+    removeWatch(target: string, name: string): void;
+    isWatching(target: string, name: string): boolean;
+    findWatching(target: string, name: string): VariableReference | null;
 
-  locks: VariableReference[];
-  addLock(target: string, name: string): void;
-  toggleLock(target: string, name: string): void;
-  removeLock(target: string, name: string): void;
-  isLocked(target: string, name: string): boolean;
-  findLock(target: string, name: string): VariableReference | null;
+    locks: VariableReference[];
+    addLock(target: string, name: string): void;
+    toggleLock(target: string, name: string): void;
+    removeLock(target: string, name: string): void;
+    isLocked(target: string, name: string): boolean;
+    findLock(target: string, name: string): VariableReference | null;
 }
 export interface WrappedTarget {
-  name: string;
-  variables: WrappedVariable[];
-  isStage: boolean;
-  isClone: boolean;
+    name: string;
+    variables: WrappedVariable[];
+    isStage: boolean;
+    isClone: boolean;
 }
 export type ScratchValue = VM.ScratchCompatibleValue | VM.ScratchList;
 export interface VariableReference {
-  target: string;
-  name: string;
+    target: string;
+    name: string;
 }
 export interface WrappedVariable {
-  name: string;
-  value: Wrapper<ScratchValue>;
-  isList: boolean;
-  target: string;
+    name: string;
+    value: Wrapper<ScratchValue>;
+    isList: boolean;
+    target: string;
 }
 
 export function wrapVariable(
@@ -154,7 +154,7 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
         findWatching(target, name) {
             return (
                 this.watchings.find((e) => e.target === target && e.name === name) ||
-        null
+                null
             );
         },
 
