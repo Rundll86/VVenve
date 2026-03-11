@@ -5,8 +5,12 @@ export function isNativeProxy(cons: unknown): cons is typeof Proxy {
     if (typeof cons.toString !== "function") return false;
     const strDesc = Object.getOwnPropertyDescriptor(cons, "toString");
     if (strDesc && !strDesc.configurable) return false;
-    //@ts-expect-error 这个只是测试是否被劫持而已
-    cons.length = 114514;
+    try {
+        //@ts-expect-error 这个只是测试是否被劫持而已
+        cons.length = 114514;
+    } catch {
+        console.warn("正在侦测Proxy");
+    }
     if (cons.name !== "Proxy" || cons.length !== 2) return false;
     if (Object.getPrototypeOf(cons) !== Function.prototype) return false;
     const keys = Object.getOwnPropertyNames(cons);
