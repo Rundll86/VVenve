@@ -14,7 +14,7 @@ export function isNativeProxy(cons: unknown): cons is typeof Proxy {
     if (cons.name !== "Proxy" || cons.length !== 2) return false;
     if (Object.getPrototypeOf(cons) !== Function.prototype) return false;
     const keys = Object.getOwnPropertyNames(cons);
-    if (keys.filter(k => !["length", "name", "prototype"].includes(k)).length > 0) {
+    if (keys.filter(k => !["length", "name", "revocable"].includes(k)).length > 0) {
         return false;
     }
     return true;
