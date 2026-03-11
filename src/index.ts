@@ -9,7 +9,14 @@ import { vm } from "./state/vm";
 import { guardWindows } from "./state/window";
 import { isNativeProxy } from "./util/validate";
 
-if (isNativeProxy(window.Proxy)) {
+(() => {
+    if (!isNativeProxy(window.Proxy)) {
+        console.error("疑似注入");
+        alert("妈呀大姐 吓死人了🙄💅，你个臭贝贝是不是改惹Proxy构造器想绕过本🉑的私有鉴权接口，被本🉑发现惹🥵这么会hijack可以去仓库提个PR哈🥵🍆。");
+        return;
+    }
+
+    // 开发时的HMR实现，删掉旧的组件
     document.querySelectorAll("#vvenve-dragger").forEach((e) => {
         e.remove();
     });
@@ -29,7 +36,4 @@ if (isNativeProxy(window.Proxy)) {
     window.__VVENVE__ = createPrivateContext(vm!);
     window.__VVENVE_PUBLIC__ = createPublicContext();
     guardWindows();
-} else {
-    console.error("疑似注入");
-    alert("妈呀大姐 吓死人了🙄💅，你个臭贝贝是不是改惹Proxy构造器想绕过本🉑的私有鉴权接口，被本🉑发现惹🥵这么会hijack可以去仓库提个PR哈🥵🍆。");
-}
+})();

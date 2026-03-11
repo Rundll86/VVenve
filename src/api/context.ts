@@ -1,5 +1,6 @@
 import { injectedState, mainShowing, projectShowing, watcherShowing } from "src/state/window";
 import { VariableReference } from "./vm";
+import { onObtainVM } from "src/state/vm";
 
 export interface PrivateContext {
     vm: VM;
@@ -70,6 +71,7 @@ export function createPrivateContext(vm: VM) {
         context.injected = true;
         return true;
     };
+    onObtainVM.subcribe(vm => context.vm = vm);
 
     const context: PrivateContext = { vm, injected: true, ban, unban };
     return context;
