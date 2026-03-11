@@ -12,13 +12,11 @@ import SubWindow from "../SubWindow";
 import { isVMObtained, vm, wrappedVM } from "../../state/vm";
 import Button from "../Button";
 import {
-    guardWindows,
     mainShowing,
     projectShowing,
     watcherShowing,
 } from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
-import { createPrivateContext, createPublicContext } from "src/api/context";
 
 export default createComponent(
     {
@@ -31,9 +29,7 @@ export default createComponent(
     },
     () => {
         const targetShowing: Record<string, Wrapper<boolean>> = {};
-        window.__VVENVE__ = createPrivateContext(vm!);
-        window.__VVENVE_PUBLIC__ = createPublicContext();
-        guardWindows();
+
         return SubWindow(
             { x: wrap(100), y: wrap(100), showing: mainShowing },
             {
@@ -43,9 +39,7 @@ export default createComponent(
                         "已获取VM：",
                         isVMObtained,
                         when(isVMObtained, () =>
-                            Button({ text: "打印到控制台" }).$.on("click", () =>
-                                console.log(vm),
-                            ),
+                            Button({ text: "打印到控制台" }).$.on("click", () => IS_DEVELOPMENT && console.log(vm)),
                         ),
                         when(isVMObtained, () =>
                             tree("div")

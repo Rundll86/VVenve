@@ -8,5 +8,6 @@ declare global {
         injectVVenve: () => void;
     }
     const OBTAINER: ObtainVMMethod;
+    const IS_DEVELOPMENT: boolean;
 }
 export { };

@@ -37,7 +37,8 @@ export default defineConfig(async options => {
                 .replaceAll("${logo}", `data:image/svg+xml;base64,${Buffer.from(logo).toString("base64")}`)
         },
         define: {
-            "OBTAINER": JSON.stringify(obtainer)
+            "OBTAINER": JSON.stringify(obtainer),
+            "IS_DEVELOPMENT": JSON.stringify(isDevelopment)
         },
     } satisfies Options));
 });
