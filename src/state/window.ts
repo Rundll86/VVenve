@@ -1,13 +1,10 @@
 import { wrap } from "nine";
-export const mainShowing = wrap(false);
-export const watcherShowing = wrap(false);
-export const projectShowing = wrap(false);
+import { getAllWindows } from "src/components/manager/WindowManager";
+
 export const injectedState = wrap(true);
 
-const allShowings = [mainShowing, watcherShowing, projectShowing];
-
 export function guardWindows() {
-    for (const showing of allShowings) {
+    for (const showing of getAllWindows().map(i => i.showing)) {
         showing.event.subcribe((val) => {
             if (val && !injectedState.get()) {
                 showing.set(false);

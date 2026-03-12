@@ -1,12 +1,32 @@
-import { createComponent, styleSet, tree, wrap } from "nine";
+import { createComponent, styleSet, tree } from "nine";
 import SubWindow from "../SubWindow";
-import { projectShowing } from "src/state/window";
 import { download } from "src/util/data";
 import Button from "../Button";
 import { vm } from "src/state/vm";
 
-export default createComponent({}, () => {
-    return SubWindow({ x: wrap(100), y: wrap(100), showing: projectShowing }, {
+export default createComponent({
+    props: {
+        x: {
+            transform: Number,
+            uploadable: true
+        },
+        y: {
+            transform: Number,
+            uploadable: true
+        },
+        showing: {
+            transform: Boolean,
+            uploadable: true
+        },
+        name: {
+            transform: String
+        },
+        layer: {
+            transform: Number
+        }
+    }
+}, (props) => {
+    return SubWindow(props, {
         title: () => "作品管理器",
         content: () =>
             tree("div")

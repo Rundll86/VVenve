@@ -11,12 +11,8 @@ import {
 import SubWindow from "../SubWindow";
 import { isVMObtained, vm, wrappedVM } from "../../state/vm";
 import Button from "../Button";
-import {
-    mainShowing,
-    projectShowing,
-    watcherShowing,
-} from "src/state/window";
 import SpriteTarget from "../target/SpriteTarget";
+import { setShowing } from "../manager/WindowManager";
 
 export default createComponent(
     {
@@ -26,12 +22,32 @@ export default createComponent(
                 .flexDirection("column")
                 .maxWidth("50vw"),
         ],
+        props: {
+            x: {
+                transform: Number,
+                uploadable: true
+            },
+            y: {
+                transform: Number,
+                uploadable: true
+            },
+            showing: {
+                transform: Boolean,
+                uploadable: true
+            },
+            name: {
+                transform: String
+            },
+            layer: {
+                transform: Number
+            }
+        }
     },
-    () => {
+    (props) => {
         const targetShowing: Record<string, Wrapper<boolean>> = {};
 
         return SubWindow(
-            { x: wrap(100), y: wrap(100), showing: mainShowing },
+            props,
             {
                 title: (title) => tree("img").class("logo").src(title),
                 content: () =>
@@ -47,11 +63,11 @@ export default createComponent(
                                 .append(
                                     Button({ text: "项目管理器" }).$.on(
                                         "click",
-                                        () => projectShowing.set(true),
+                                        () => setShowing("project", true),
                                     ),
                                     Button({ text: "视奸变量" }).$.on(
                                         "click",
-                                        () => watcherShowing.set(true),
+                                        () => setShowing("watcher", true),
                                     ),
                                     $(
                                         sync(
@@ -61,7 +77,7 @@ export default createComponent(
                                                     .targets.map((t) => {
                                                         if (
                                                             !targetShowing[
-                                                                t.name
+                                                            t.name
                                                             ]
                                                         )
                                                             targetShowing[
@@ -71,7 +87,7 @@ export default createComponent(
                                                             data: t,
                                                             showing:
                                                                 targetShowing[
-                                                                    t.name
+                                                                t.name
                                                                 ],
                                                         });
                                                     }),

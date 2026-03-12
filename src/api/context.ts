@@ -1,6 +1,7 @@
-import { injectedState, mainShowing, projectShowing, watcherShowing } from "src/state/window";
+import { injectedState } from "src/state/window";
 import { VariableReference } from "./vm";
 import { onObtainVM } from "src/state/vm";
+import { getAllWindows } from "src/components/manager/WindowManager";
 
 export interface PrivateContext {
     vm: VM;
@@ -47,9 +48,7 @@ export function createPrivateContext(vm: VM) {
         banKey = crypto.randomUUID();
         injectedState.set(false);
         context.injected = false;
-        mainShowing.set(false);
-        watcherShowing.set(false);
-        projectShowing.set(false);
+        getAllWindows().forEach(w => w.showing.set(false));
         if (!sealed) {
             window.__VVENVE__ = new Proxy(window.__VVENVE__, handler);
             try {

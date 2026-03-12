@@ -1,9 +1,7 @@
 import { createPrivateContext, createPublicContext } from "./api/context";
 import Draggable from "./components/Draggable";
+import WindowManager from "./components/manager/WindowManager";
 import Triangle from "./components/Triangle";
-import MainWindow from "./components/windows/MainWindow";
-import ProjectWindow from "./components/windows/ProjectWindow";
-import WatcherWindow from "./components/windows/WatcherWindow";
 import { wrap } from "./nine";
 import { vm } from "./state/vm";
 import { guardWindows } from "./state/window";
@@ -16,16 +14,10 @@ import { isNativeProxy } from "./util/validate";
         return;
     }
 
-    // 开发时的HMR实现，删掉旧的组件
-    document.querySelectorAll("#vvenve-dragger").forEach((e) => {
-        e.remove();
-    });
-    Reflect.deleteProperty(window, "__VVENVE__");
+    // 开发环境的HMR实现，删掉旧的组件和上下文
+    document.querySelectorAll("#vvenve-dragger").forEach(e => e.remove());
 
-    MainWindow().mount("body");
-    WatcherWindow().mount("body");
-    ProjectWindow().mount("body");
-
+    WindowManager().mount("body");
     Draggable(
         { x: wrap(100), y: wrap(100) },
         {
@@ -33,6 +25,9 @@ import { isNativeProxy } from "./util/validate";
         },
     ).mount("body");
 
+    // 要先把旧的删了来再建新的
+    Reflect.deleteProperty(window, "__VVENVE__");
+    Reflect.deleteProperty(window, "__VVENVE_PUBLIC__");
     window.__VVENVE__ = createPrivateContext(vm!);
     window.__VVENVE_PUBLIC__ = createPublicContext();
     guardWindows();

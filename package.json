@@ -6,7 +6,7 @@
         "start": "node dist/index.js",
         "dev": "run-p dev:watch dev:run",
         "dev:watch": "tsup --watch --env.NODE_ENV development",
-        "dev:run": "tsc test/index.ts && node test/index.js",
+        "dev:run": "tsc --resolveJsonModule test/index.ts && node test/index.js",
         "dev:tsc": "tsc --watch",
         "build": "tsup --env.NODE_ENV production",
         "build:tsc": "tsc",

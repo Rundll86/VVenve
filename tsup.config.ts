@@ -15,7 +15,7 @@ export default defineConfig(async options => {
 
     return Object.entries(obtainers).map(([obtainer, runAt]) => ({
         entry: {
-            [`VVenve-${obtainer.toLowerCase()}.dist`]: "src/index.ts"
+            [`VVenve-v${version}-${obtainer.toLowerCase()}`]: "src/index.ts"
         },
         splitting: false,
         sourcemap: isDevelopment,

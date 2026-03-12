@@ -2,11 +2,12 @@ import { chromium } from "playwright";
 import * as fs from "fs/promises";
 import { watch } from "fs";
 import * as path from "path";
+import { version } from "../package.json";
 
 const mill = async (time: number) =>
     new Promise<void>((resolve) => setTimeout(resolve, time));
 const targetUrl = "https://ccw.site/gandi";
-const bundlePath = path.resolve(process.cwd(), "dist/VVenve-ReactDom.dist.js");
+const bundlePath = path.resolve(process.cwd(), `dist/VVenve-v${version}-reactdom.js`);
 
 const readBundle = async () => fs.readFile(bundlePath, "utf-8");
 

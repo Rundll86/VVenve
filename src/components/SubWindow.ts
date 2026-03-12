@@ -9,6 +9,7 @@ import {
 import Draggable from "./Draggable";
 import Button from "./Button";
 import Logo from "./Logo";
+import { pin } from "./manager/WindowManager";
 
 export default createComponent(
     {
@@ -30,6 +31,12 @@ export default createComponent(
                 uploadable: true,
                 required: true,
             },
+            name: {
+                transform: String
+            },
+            layer: {
+                transform: Number,
+            }
         },
         styles: [
             styleSet(".window")
@@ -50,7 +57,7 @@ export default createComponent(
                 .padding("20px")
                 .maxHeight("80vh")
                 .overflow("auto"),
-            styleSet(".close-button").marginLeft("auto"),
+            styleSet(".right").marginLeft("auto"),
         ],
         slots: [
             defineSlot("title", { template: defineTemplate<string>() }),
@@ -58,9 +65,9 @@ export default createComponent(
         ],
         uuid: "SubWindow",
     },
-    ({ x, y, showing }, slots) => {
+    ({ x, y, showing, name, layer }, slots) => {
         return Draggable(
-            { x, y },
+            { x, y, layer },
             {
                 content: () =>
                     tree("div").append(
@@ -79,9 +86,13 @@ export default createComponent(
                                                         slots.title(title),
                                                 },
                                             ),
+                                            tree("span").class("right"),
                                             Button({ text: "🔴" }).$.on(
                                                 "click",
-                                                () => showing.set(false),
+                                                e => {
+                                                    e.stopPropagation();
+                                                    showing.set(false);
+                                                },
                                             ),
                                         )
                                         .data({ region: "true" }),
@@ -92,6 +103,6 @@ export default createComponent(
                         ),
                     ),
             },
-        );
+        ).$.on("mousedown", () => pin(name.get()));
     },
 );

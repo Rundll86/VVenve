@@ -24,18 +24,26 @@ export default createComponent(
                 required: true,
                 uploadable: true,
             },
+            layer: {
+                transform: Number,
+                shadow: 0
+            }
         },
-        slots: [defineSlot("content", { template: defineTemplate() })],
+        slots: [
+            defineSlot("content", { template: defineTemplate() })
+        ],
+        events: [
+            defineSlot("startDrag", { template: defineTemplate<[number, number]>() })
+        ],
         styles: [
             styleSet(".dragger")
                 .userSelect("none")
-                .zIndex("2147483647")
                 .position("fixed"),
             styleSet(".dragger [data-region]:hover").cursor("move"),
         ],
         uuid: "Draggable",
     },
-    ({ x, y }, slots) => {
+    ({ x, y, layer }, slots, emit) => {
         x.event.subcribe((newX) => (newX < 0 ? x.set(0) : null));
         y.event.subcribe((newY) => (newY < 0 ? y.set(0) : null));
         const dragging = wrap(false);
@@ -54,8 +62,11 @@ export default createComponent(
             .id("vvenve-dragger")
             .use(
                 sync(
-                    () => styleSet().left(`${x.get()}px`).top(`${y.get()}px`),
-                    [x, y],
+                    () => styleSet()
+                        .zIndex(String(2147483647 - layer.get()))
+                        .left(`${x.get()}px`)
+                        .top(`${y.get()}px`),
+                    [x, y, layer],
                 ),
             )
             .append(tree("div").append(slots.content()))
@@ -68,6 +79,7 @@ export default createComponent(
                     mouseOffsetX = e.offsetX;
                     mouseOffsetY = e.offsetY;
                     dragging.set(true);
+                    emit("startDrag", [x.get(), y.get()]);
                 }
             });
     },
