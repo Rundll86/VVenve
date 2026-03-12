@@ -41,12 +41,14 @@ export default createComponent({
                         .append(
                             sync(
                                 () =>
-                                    wrappedVM
-                                        ? wrappedVM.get().watchings.map(v => VariableTarget({
-                                            data: wrappedVM?.get().findVariable(v.target, v.name),
-                                            watching: true
-                                        }))
-                                        : null,
+                                    wrappedVM.get().metadatas.map(
+                                        m => m.watching
+                                            ? VariableTarget({
+                                                data: wrappedVM.get().findVariable(m.reference.target, m.reference.name),
+                                                watching: true
+                                            })
+                                            : null
+                                    ),
                                 [wrappedVM]
                             )
                         )

@@ -77,7 +77,7 @@ export default createComponent(
                                                     .targets.map((t) => {
                                                         if (
                                                             !targetShowing[
-                                                            t.name
+                                                                t.name
                                                             ]
                                                         )
                                                             targetShowing[
@@ -87,7 +87,7 @@ export default createComponent(
                                                             data: t,
                                                             showing:
                                                                 targetShowing[
-                                                                t.name
+                                                                    t.name
                                                                 ],
                                                         });
                                                     }),

@@ -1,23 +1,21 @@
 import { wrap, Wrapper } from "nine";
 import { patchArray } from "src/state/patch/array";
 
+export interface VariableMetadata {
+    reference: VariableReference;
+    description: string;
+    locked: boolean;
+    watching: boolean;
+}
 export interface WrappedVM {
     targets: WrappedTarget[];
     findVariable(target: string, name: string): WrappedVariable | null;
 
-    watchings: VariableReference[];
-    addWatch(target: string, name: string): void;
-    toggleWatch(target: string, name: string): void;
-    removeWatch(target: string, name: string): void;
-    isWatching(target: string, name: string): boolean;
-    findWatching(target: string, name: string): VariableReference | null;
-
-    locks: VariableReference[];
-    addLock(target: string, name: string): void;
-    toggleLock(target: string, name: string): void;
-    removeLock(target: string, name: string): void;
-    isLocked(target: string, name: string): boolean;
-    findLock(target: string, name: string): VariableReference | null;
+    metadatas: VariableMetadata[];
+    setMetadata<K extends keyof VariableMetadata>(target: string, name: string, data: K, value: VariableMetadata[K]): void;
+    getMetadata<K extends keyof VariableMetadata>(target: string, name: string, data: K): VariableMetadata[K] | null;
+    toggleMetadata<K extends keyof { [K in keyof VariableMetadata as VariableMetadata[K] extends boolean ? K : never]: unknown }>(target: string, name: string, data: K): void;
+    findMetadata(target: string, name: string): VariableMetadata | null;
 }
 export interface WrappedTarget {
     name: string;
@@ -51,7 +49,7 @@ export function wrapVariable(
     Object.defineProperty(scratchVariable, "value", {
         configurable: true,
         set(newValue) {
-            if (vm.get().isLocked(wrappedVariable.target, wrappedVariable.name))
+            if (vm.get().getMetadata(wrappedVariable.target, wrappedVariable.name, "locked"))
                 return;
             wrappedVariable.value.set(newValue);
         },
@@ -62,11 +60,9 @@ export function wrapVariable(
     Object.defineProperty(scratchVariable, "name", {
         configurable: true,
         set(newValue) {
-            const oldVariable = vm
-                .get()
-                .findWatching(wrappedVariable.target, wrappedVariable.name);
+            const oldVariable = vm.get().findMetadata(wrappedVariable.target, wrappedVariable.name);
             if (oldVariable) {
-                oldVariable.name = newValue;
+                oldVariable.reference.name = newValue;
             }
             wrappedVariable.name = newValue;
             vm.updateOnly();
@@ -129,61 +125,22 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
             );
         },
 
-        watchings: [],
-        addWatch(target, name) {
-            this.watchings.push({ target, name });
-            wrappedVM.updateOnly();
+        metadatas: [],
+        findMetadata(target, name) {
+            return this.metadatas.find(m => m.reference.target === target && m.reference.name === name) ?? null;
         },
-        toggleWatch(target, name) {
-            if (this.isWatching(target, name)) {
-                this.removeWatch(target, name);
-            } else {
-                this.addWatch(target, name);
+        setMetadata(target, name, data, value) {
+            const metadata = this.findMetadata(target, name);
+            if (metadata) {
+                metadata[data] = value;
+                wrappedVM.updateOnly();
             }
-            wrappedVM.updateOnly();
         },
-        removeWatch(target, name) {
-            this.watchings = this.watchings.filter(
-                (e) => e.target !== target || e.name !== name,
-            );
-            wrappedVM.updateOnly();
+        getMetadata(target, name, data) {
+            return this.findMetadata(target, name)?.[data] ?? null;
         },
-        isWatching(target, name) {
-            return this.watchings.some((e) => e.target === target && e.name === name);
-        },
-        findWatching(target, name) {
-            return (
-                this.watchings.find((e) => e.target === target && e.name === name) ||
-                null
-            );
-        },
-
-        locks: [],
-        addLock(target, name) {
-            this.locks.push({ target, name });
-            wrappedVM.updateOnly();
-        },
-        toggleLock(target, name) {
-            if (this.isLocked(target, name)) {
-                this.removeLock(target, name);
-            } else {
-                this.addLock(target, name);
-            }
-            wrappedVM.updateOnly();
-        },
-        removeLock(target, name) {
-            this.locks = this.locks.filter(
-                (e) => e.target !== target || e.name !== name,
-            );
-            wrappedVM.updateOnly();
-        },
-        isLocked(target, name) {
-            return this.locks.some((e) => e.target === target && e.name === name);
-        },
-        findLock(target, name) {
-            return (
-                this.locks.find((e) => e.target === target && e.name === name) || null
-            );
+        toggleMetadata(target, name, data) {
+            this.setMetadata(target, name, data, !this.getMetadata(target, name, data));
         },
     });
     cast(scratchVM.runtime.targets);

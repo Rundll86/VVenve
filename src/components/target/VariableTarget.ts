@@ -60,9 +60,9 @@ export default createComponent(
                             return;
                         }
                         if (watching.get()) {
-                            wrappedVM?.get().toggleLock(data.get().target, data.get().name);
+                            wrappedVM.get().toggleMetadata(data.get().target, data.get().name, "locked");
                         } else {
-                            wrappedVM?.get().toggleWatch(data.get().target, data.get().name);
+                            wrappedVM.get().toggleMetadata(data.get().target, data.get().name, "watching");
                         }
                     })
                     .append(
@@ -80,11 +80,13 @@ export default createComponent(
                             .append(
                                 sync(
                                     () =>
-                                        (wrappedVM
-                                            ?.get()
-                                            .isLocked(data.get()?.target, data.get()?.name)
-                                            ? "🔒"
-                                            : "") + (isAir.get() ? "棍母" : data.get()?.name),
+                                        (
+                                            wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "locked") ? "🔒" : ""
+                                        ) + (
+                                            isAir.get() ? "棍母" : data.get()?.name
+                                        ) + (
+                                            wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "description")
+                                        ),
                                     [data],
                                 ),
                             ),
@@ -97,11 +99,9 @@ export default createComponent(
                                         sync(
                                             () =>
                                                 (isAir.get() ? "🚫" : "") +
-                                                (wrappedVM
-                                                    ?.get()
-                                                    .isWatching(data.get()?.target, data.get()?.name)
+                                                    wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "watching")
                                                     ? "🔪"
-                                                    : "👁️"),
+                                                    : "👁️",
                                             [wrappedVM],
                                         ),
                                     ),
@@ -113,8 +113,7 @@ export default createComponent(
                     const name = sync(() => data.get()?.name ?? "", [data]);
                     const locked = sync(
                         () =>
-                            wrappedVM?.get().isLocked(data.get()?.target, data.get()?.name) ??
-                            false,
+                            wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "locked") ?? false,
                         [wrappedVM, data],
                     );
                     const isList = sync(() => data.get()?.isList ?? false, [data]);
