@@ -133,8 +133,17 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
             const metadata = this.findMetadata(target, name);
             if (metadata) {
                 metadata[data] = value;
-                wrappedVM.updateOnly();
+            } else {
+                const newMetadata: VariableMetadata = {
+                    reference: { target, name },
+                    description: "",
+                    locked: false,
+                    watching: false
+                };
+                newMetadata[data] = value;
+                this.metadatas.push(newMetadata);
             }
+            wrappedVM.updateOnly();
         },
         getMetadata(target, name, data) {
             return this.findMetadata(target, name)?.[data] ?? null;
