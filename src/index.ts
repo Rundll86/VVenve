@@ -25,9 +25,8 @@ import { isNativeProxy } from "./util/validate";
         },
     ).mount("body");
 
-    // 要先把旧的删了来再建新的
+    // 要先把旧的私有上下文删了来再建新的
     Reflect.deleteProperty(window, "__VVENVE__");
-    Reflect.deleteProperty(window, "__VVENVE_PUBLIC__");
     window.__VVENVE__ = createPrivateContext(vm!);
     window.__VVENVE_PUBLIC__ = createPublicContext();
     guardWindows();

@@ -58,6 +58,7 @@ export default createComponent(
                 .maxHeight("80vh")
                 .overflow("auto"),
             styleSet(".right").marginLeft("auto"),
+            styleSet("*").color("black"),
         ],
         slots: [
             defineSlot("title", { template: defineTemplate<string>() }),
