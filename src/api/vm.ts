@@ -73,6 +73,14 @@ export function wrapVariable(
     });
     return wrappedVariable;
 }
+export function describeVariable(target: string, name: string): VariableMetadata {
+    return {
+        reference: { target, name },
+        description: "",
+        locked: false,
+        watching: false
+    };
+}
 export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
     const cast = (scratchTargets: VM.Target[]) => {
         wrappedVM.get().targets = scratchTargets.map(
@@ -134,12 +142,7 @@ export function wrapVM(scratchVM: VM): Wrapper<WrappedVM> {
             if (metadata) {
                 metadata[data] = value;
             } else {
-                const newMetadata: VariableMetadata = {
-                    reference: { target, name },
-                    description: "",
-                    locked: false,
-                    watching: false
-                };
+                const newMetadata = describeVariable(target, name);
                 newMetadata[data] = value;
                 this.metadatas.push(newMetadata);
             }

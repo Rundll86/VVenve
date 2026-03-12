@@ -112,7 +112,7 @@ export default createComponent(
                                     .append(
                                         sync(
                                             () =>
-                                                isAir.get() ? "🚫" :
+                                                isAir.get() ? "🚫👁️" :
                                                     wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "watching")
                                                         ? "🔪"
                                                         : "👁️",

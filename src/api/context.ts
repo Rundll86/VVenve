@@ -1,5 +1,5 @@
 import { injectedState } from "src/state/window";
-import { VariableMetadata } from "./vm";
+import { describeVariable, VariableMetadata } from "./vm";
 import { onObtainVM, wrappedVM } from "src/state/vm";
 import { getAllWindows } from "src/components/manager/WindowManager";
 
@@ -74,8 +74,10 @@ export function createPrivateContext(vm: VM) {
     return context;
 }
 export function createPublicContext(): PublicContext {
+    const stageVariable = describeVariable("Stage", "我的变量");
+    stageVariable.description = "只是占位！";
     return {
-        variables: [],
+        variables: [stageVariable],
         updateVariable() {
             wrappedVM.get().metadatas = window.__VVENVE_PUBLIC__.variables;
         },
