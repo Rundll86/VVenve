@@ -6,7 +6,7 @@ import { version } from "../package.json";
 
 const mill = async (time: number) =>
     new Promise<void>((resolve) => setTimeout(resolve, time));
-const targetUrl = "https://ccw.site/gandi";
+const targetUrl = "https://ccw.site/gandi/extension";
 const bundlePath = path.resolve(process.cwd(), `dist/VVenve-v${version}-reactdom.js`);
 
 const readBundle = async () => fs.readFile(bundlePath, "utf-8");

@@ -43,6 +43,13 @@ export default createComponent(
             styleSet(".right").marginLeft("auto"),
             styleSet(".var-watcher").display("flex").flexDirection("column"),
             styleSet(".watcher"),
+            styleSet(".info")
+                .display("flex")
+                .flexDirection("column"),
+            styleSet(".name"),
+            styleSet(".description")
+                .fontSize("14px")
+                .color("gray")
         ],
         uuid: "VariableTarget",
     },
@@ -60,9 +67,9 @@ export default createComponent(
                             return;
                         }
                         if (watching.get()) {
-                            wrappedVM?.get().toggleLock(data.get().target, data.get().name);
+                            wrappedVM.get().toggleMetadata(data.get().target, data.get().name, "locked");
                         } else {
-                            wrappedVM?.get().toggleWatch(data.get().target, data.get().name);
+                            wrappedVM.get().toggleMetadata(data.get().target, data.get().name, "watching");
                         }
                     })
                     .append(
@@ -76,17 +83,26 @@ export default createComponent(
                         }),
                         when(watching, () => Label({ text: data.get()?.target })),
                         tree("span")
-                            .class("text")
+                            .class("info")
                             .append(
-                                sync(
-                                    () =>
-                                        (wrappedVM
-                                            ?.get()
-                                            .isLocked(data.get()?.target, data.get()?.name)
-                                            ? "🔒"
-                                            : "") + (isAir.get() ? "棍母" : data.get()?.name),
-                                    [data],
-                                ),
+                                tree("span")
+                                    .class("name")
+                                    .append(
+                                        sync(
+                                            () =>
+                                                (wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "locked") ? "🔒" : "")
+                                                + (isAir.get() ? "棍母" : data.get()?.name),
+                                            [data, wrappedVM],
+                                        )
+                                    ),
+                                tree("span")
+                                    .class("description")
+                                    .append(
+                                        sync(
+                                            () => wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "description"),
+                                            [data, wrappedVM],
+                                        )
+                                    ),
                             ),
                         when(
                             () => !watching.get(),
@@ -96,38 +112,21 @@ export default createComponent(
                                     .append(
                                         sync(
                                             () =>
-                                                (isAir.get() ? "🚫" : "") +
-                                                (wrappedVM
-                                                    ?.get()
-                                                    .isWatching(data.get()?.target, data.get()?.name)
-                                                    ? "🔪"
-                                                    : "👁️"),
-                                            [wrappedVM],
+                                                isAir.get() ? "🚫👁️" :
+                                                    wrappedVM.get().getMetadata(data.get()?.target, data.get()?.name, "watching")
+                                                        ? "🔪"
+                                                        : "👁️",
+                                            [wrappedVM, data],
                                         ),
                                     ),
                             [watching],
                         ),
                     ),
                 when(watching, () => {
-                    const target = sync(() => data.get()?.target ?? "", [data]);
-                    const name = sync(() => data.get()?.name ?? "", [data]);
-                    const locked = sync(
-                        () =>
-                            wrappedVM?.get().isLocked(data.get()?.target, data.get()?.name) ??
-                            false,
-                        [wrappedVM, data],
-                    );
-                    const isList = sync(() => data.get()?.isList ?? false, [data]);
                     return tree("div")
                         .class("watcher")
                         .append(
-                            ValueShow({
-                                value: data.get()?.value,
-                                target,
-                                name,
-                                locked,
-                                isList,
-                            }),
+                            ValueShow({ data }),
                         );
                 }),
             );
