@@ -2,7 +2,6 @@ import { Component, ComponentEventStore, ComponentInstance, ComponentSlotStore, 
 import MainWindow from "../windows/MainWindow";
 import ProjectWindow from "../windows/ProjectWindow";
 import WatcherWindow from "../windows/WatcherWindow";
-import { moveToFirst } from "src/util/array";
 
 type WindowComponent = Component<{
     x: {
