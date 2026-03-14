@@ -19,7 +19,7 @@ type WindowComponent = Component<{
     name: {
         transform: typeof String
     }
-}, ComponentEventStore, ComponentSlotStore>;
+}, ComponentEventStore, ComponentSlotStore, boolean>;
 interface WindowDescriptor {
     component: WindowComponent;
     name: string;
@@ -36,11 +36,12 @@ const windows: WindowDescriptor[] = [
     { component: WatcherWindow, name: "watcher" },
     { component: ProjectWindow, name: "project" }
 ];
-const instances = wrap<WindowInstance[]>(windows.map((window, i) => {
+const instances = wrap<WindowInstance[]>([]);
+const instantiator = Promise.all(windows.map(async (window, i) => {
     const showingState = wrap(false);
     const layerCount = wrap(i);
     return {
-        component: window.component({
+        component: await window.component({
             x: wrap(100),
             y: wrap(100),
             showing: showingState,
@@ -51,7 +52,7 @@ const instances = wrap<WindowInstance[]>(windows.map((window, i) => {
         name: window.name,
         layer: layerCount
     };
-}));
+})).then(w => instances.set(w));
 
 export function getAllWindows() {
     return [...instances.get()];
@@ -76,7 +77,8 @@ export function pin(name: string) {
     }
 }
 
-export default createComponent({}, () => {
+export default createComponent({}, async () => {
+    await instantiator;
     return tree("div")
         .append(
             sync(() => instances.get().map(i => i.component))

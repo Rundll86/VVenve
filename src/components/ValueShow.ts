@@ -1,5 +1,5 @@
-import { Wrapper, createComponent, styleSet, sync, tree, typed } from "nine";
-import { ScratchValue, WrappedVariable } from "src/api/vm";
+import { createComponent, styleSet, sync, tree, typed } from "nine";
+import { WrappedVariable } from "src/api/vm";
 import { wrappedVM } from "src/state/vm";
 
 export default createComponent(

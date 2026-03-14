@@ -2,16 +2,14 @@ import { vm as obtainVM } from "scratch-obtain";
 import { WrappedVM, wrapVM } from "src/api/vm";
 import { EventSubcriber, wrap, Wrapper } from "nine";
 
-export let vm: VM | null = null;
-obtainVM([OBTAINER]).then(v => {
-    if (!v) return;
-    onObtainVM.emit(v);
-    vm = v;
-    isVMObtained.set(!!vm);
-    wrappedVM = wrapVM(vm);
-});
-
+export const vm = obtainVM([OBTAINER]).then(newVM => {
+    if (!newVM) return null;
+    wrappedVM = wrapVM(newVM);
+    isVMObtained.set(true);
+    onObtainVM.emit(newVM);
+    return newVM;
+}) as Promise<VM>;
 export const isVMObtained: Wrapper<boolean> = wrap(false);
-export let wrappedVM: Wrapper<WrappedVM>;
-
 export const onObtainVM = new EventSubcriber<[VM]>();
+
+export let wrappedVM: Wrapper<WrappedVM>;

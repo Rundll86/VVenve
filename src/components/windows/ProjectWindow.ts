@@ -2,7 +2,7 @@ import { createComponent, styleSet, tree } from "nine";
 import SubWindow from "../SubWindow";
 import { download } from "src/util/data";
 import Button from "../Button";
-import { vm } from "src/state/vm";
+import { vm as _vm } from "src/state/vm";
 
 export default createComponent({
     props: {
@@ -25,7 +25,8 @@ export default createComponent({
             transform: Number
         }
     }
-}, (props) => {
+}, async (props) => {
+    const vm = await _vm;
     return SubWindow(props, {
         title: () => "作品管理器",
         content: () =>
@@ -33,20 +34,20 @@ export default createComponent({
                 .use(styleSet().display("flex").flexDirection("column").alignItems("center"))
                 .append(
                     Button({ text: "下载作品到本地" }).$
-                        .on("click", async () => download(await vm?.saveProjectSb3() || "", "project.sb3")),
+                        .on("click", async () => download(await vm.saveProjectSb3() || "", "project.sb3")),
                     Button({ text: "下载舞台" }).$
                         .on("click", async () => {
-                            for (const target of vm?.runtime.targets ?? []) {
+                            for (const target of vm.runtime.targets ?? []) {
                                 if (target.isStage) {
-                                    download(await vm?.exportSprite(target.id) || "", "舞台.sprite3");
+                                    download(await vm.exportSprite(target.id) || "", "舞台.sprite3");
                                 }
                             }
                         }),
                     Button({ text: "下载所有角色" }).$
                         .on("click", async () => {
-                            for (const target of vm?.runtime.targets ?? []) {
+                            for (const target of vm.runtime.targets ?? []) {
                                 if (target.isOriginal && !target.isStage) {
-                                    download(await vm?.exportSprite(target.id) || "", `${target.getName()}.sprite3`);
+                                    download(await vm.exportSprite(target.id) || "", `${target.getName()}.sprite3`);
                                 }
                             }
                         })

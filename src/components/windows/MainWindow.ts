@@ -55,7 +55,7 @@ export default createComponent(
                         "已获取VM：",
                         isVMObtained,
                         when(isVMObtained, () =>
-                            Button({ text: "打印到控制台" }).$.on("click", () => IS_DEVELOPMENT && console.log(vm)),
+                            Button({ text: "打印到控制台" }).$.on("click", async () => IS_DEVELOPMENT && console.log(await vm)),
                         ),
                         when(isVMObtained, () =>
                             tree("div")

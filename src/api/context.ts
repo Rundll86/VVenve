@@ -4,7 +4,7 @@ import { onObtainVM, wrappedVM } from "src/state/vm";
 import { getAllWindows } from "src/components/manager/WindowManager";
 
 export interface PrivateContext {
-    vm: VM;
+    vm: VM | null;
     injected: boolean;
     ban(): string;
     unban(key: string): boolean;
@@ -14,7 +14,7 @@ export interface PublicContext {
     updateVariable(): void;
 }
 
-export function createPrivateContext(vm: VM) {
+export function createPrivateContext(vm: VM | null) {
     let banKey: string | null = null;
     let sealed = false;
 
@@ -79,7 +79,9 @@ export function createPublicContext(): PublicContext {
     return {
         variables: [stageVariable],
         updateVariable() {
-            wrappedVM.get().metadatas = window.__VVENVE_PUBLIC__.variables;
+            for (const variable of this.variables) {
+                wrappedVM.get().setMetadata(variable.reference.target, variable.reference.name, "description", variable.description);
+            }
         },
     };
 }
