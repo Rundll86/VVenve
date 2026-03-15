@@ -14,21 +14,26 @@ onObtainVM.subcribe(async () => {
         return;
     }
     if (IS_DEVELOPMENT) {
-        console.log(wrappedVM);
+        console.log("VM:", wrappedVM);
     }
 
-    // 开发环境的HMR实现，删掉旧的组件和上下文
     document.querySelectorAll("#vvenve-dragger").forEach(e => e.remove());
-    // 要先把旧的私有上下文删了来再建新的
     Reflect.deleteProperty(window, "__VVENVE__");
+    Reflect.deleteProperty(window, "__VVENVE_PUBLIC__");
     window.__VVENVE__ = createPrivateContext(await vm);
     window.__VVENVE_PUBLIC__ = createPublicContext();
 
-    (await WindowManager()).mount("body");
+    console.log("abc");
+    const w = (await WindowManager());
+    console.log(w);
+
+    w.mount("body");
+    console.log("def");
+
     Draggable(
         { x: wrap(100), y: wrap(100) },
         {
-            content: () => Triangle(),
+            content: () => Triangle().$.data({ region: "true" }),
         },
     ).mount("body");
 

@@ -37,22 +37,6 @@ const windows: WindowDescriptor[] = [
     { component: ProjectWindow, name: "project" }
 ];
 const instances = wrap<WindowInstance[]>([]);
-const instantiator = Promise.all(windows.map(async (window, i) => {
-    const showingState = wrap(false);
-    const layerCount = wrap(i);
-    return {
-        component: await window.component({
-            x: wrap(100),
-            y: wrap(100),
-            showing: showingState,
-            name: window.name,
-            layer: layerCount
-        }),
-        showing: showingState,
-        name: window.name,
-        layer: layerCount
-    };
-})).then(w => instances.set(w));
 
 export function getAllWindows() {
     return [...instances.get()];
@@ -78,7 +62,28 @@ export function pin(name: string) {
 }
 
 export default createComponent({}, async () => {
-    await instantiator;
+    instances.set(
+        await Promise.all(
+            windows.map(async (window, i) => {
+                const showingState = wrap(false);
+                const layerCount = wrap(i);
+                return {
+                    component: await window.component({
+                        x: wrap(100),
+                        y: wrap(100),
+                        showing: showingState,
+                        name: window.name,
+                        layer: layerCount
+                    }),
+                    showing: showingState,
+                    name: window.name,
+                    layer: layerCount
+                };
+            })
+        )
+    );
+    console.log("test");
+
     return tree("div")
         .append(
             sync(() => instances.get().map(i => i.component))

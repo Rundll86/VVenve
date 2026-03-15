@@ -6,7 +6,7 @@ export const vm = obtainVM([OBTAINER]).then(newVM => {
     if (!newVM) return null;
     wrappedVM = wrapVM(newVM);
     isVMObtained.set(true);
-    onObtainVM.emit(newVM);
+    Promise.resolve().then(() => onObtainVM.emit(newVM));
     return newVM;
 }) as Promise<VM>;
 export const isVMObtained: Wrapper<boolean> = wrap(false);

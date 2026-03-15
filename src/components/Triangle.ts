@@ -1,4 +1,4 @@
-import { createComponent, styleSet, tree, when } from "nine";
+import { createComponent, styleSet, tree, when, wrap } from "nine";
 import logo from "@asset/logo.svg";
 import { injectedState } from "src/state/window";
 import { getWindow } from "./manager/WindowManager";
@@ -39,7 +39,7 @@ export default createComponent(
         uuid: "Triangle",
     },
     () => {
-        const mainShowing = getWindow("main")!.showing!;
+        const mainShowing = getWindow("main")?.showing ?? wrap(false);
         return tree("div").append(
             when(
                 () => !mainShowing.get() && injectedState.get(),
