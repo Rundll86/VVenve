@@ -82,8 +82,6 @@ export default createComponent({}, async () => {
             })
         )
     );
-    console.log("test");
-
     return tree("div")
         .append(
             sync(() => instances.get().map(i => i.component))
